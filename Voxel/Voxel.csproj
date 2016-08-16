@@ -35,7 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SceneManager|x86' ">
     <OutputPath>bin\Windows\x86\SceneManager\</OutputPath>
@@ -45,6 +46,7 @@
   <PropertyGroup>
     <StartupObject>Voxel.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Compile Include="Engine\EngineCommon.cs" />
     <Compile Include="Engine\Entities\BaseEntity.cs" />
@@ -57,7 +59,7 @@
     <Compile Include="Engine\Entities\Components\MouseLookComponent.cs" />
     <Compile Include="Engine\Entities\Components\RenderComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelContainerComponent.cs" />
-    <Compile Include="Engine\Entities\Components\VoxelGeneratorComponent.cs" />
+    <Compile Include="Engine\Entities\Components\VoxelRayComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelRenderComponent.cs" />
     <Compile Include="Engine\Entities\PlayerEntity.cs" />
     <Compile Include="Engine\GeometricPrimitives\BezierPrimitive.cs" />

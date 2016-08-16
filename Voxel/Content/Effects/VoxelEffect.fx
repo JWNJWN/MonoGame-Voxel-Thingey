@@ -37,7 +37,7 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 
 	matrix WorldViewProjection = mul(mul(World, View), Projection);
 
-	float3 normal = normalize(mul(input.Normal, WorldInverseTranspose));
+	float3 normal = normalize(input.Normal);
 	float3 lightDirection = normalize(LightDirection);
 
 	float3 NdotL = max(-1, dot(normal, lightDirection));

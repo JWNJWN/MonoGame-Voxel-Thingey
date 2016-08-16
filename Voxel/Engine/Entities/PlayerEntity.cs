@@ -13,6 +13,7 @@ namespace Voxel.Engine.Entities
             FlyControlComponent flyComp = new FlyControlComponent(this, 30, 1.5f);
             MouseLookComponent mouseLookComp = new MouseLookComponent(this, 0.5f);
             ChunkLoaderComponent chunkLoadComp = new ChunkLoaderComponent(this, 8);
+            VoxelRayComponent voxRayComp = new VoxelRayComponent(this);
 
             this.position = position;
         }

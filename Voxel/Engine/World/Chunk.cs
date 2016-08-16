@@ -81,7 +81,7 @@ namespace Voxel.Engine.World
             perlin.OctaveCount = 1;
             perlin.Lacunarity = 1;
             perlin.Persistence = 1;
-            perlin.Frequency = 0.02;
+            perlin.Frequency = 0.008;
             perlin.Quality = SharpNoise.NoiseQuality.Standard;
 
             Generate();
@@ -117,6 +117,14 @@ namespace Voxel.Engine.World
         {
             Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
             dirty = true;
+        }
+
+        private bool InRange(int x, int y, int z)
+        {
+            bool isX = x > position.X && x < position.X + containerSize;
+            bool isY = y > position.Y && y < position.Y + containerSize;
+            bool isZ = z > position.Z && z < position.Z + containerSize;
+            return isX && isY && isZ;
         }
 
         private void GreedyMesh()

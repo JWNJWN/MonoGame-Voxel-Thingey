@@ -132,7 +132,7 @@ namespace Voxel.Engine.Managers
                                   (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up));
                         effect.Parameters["Projection"].SetValue(Matrix.CreatePerspectiveFieldOfView(
                                   MathHelper.ToRadians(EngineCommon.FOV), camComp.AspectRatio, 0.1f, 5000.0f));
-                        effect.Parameters["WorldInverseTranspose"].SetValue(Matrix.Transpose(Matrix.Invert(desc.worldTransform)));
+                        effect.Parameters["WorldInverseTranspose"].SetValue(Matrix.Invert(Matrix.Transpose(desc.worldTransform)));
 
                         effect.Parameters["LightDirection"].SetValue(new Vector3(0.8f, -1, 0.6f));
                         effect.Parameters["LightColor"].SetValue(Color.White.ToVector4());

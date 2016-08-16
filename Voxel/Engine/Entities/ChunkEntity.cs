@@ -12,7 +12,6 @@ namespace Voxel.Engine.Entities
             this.position = position*32;
             VoxelContainerComponent voxContainerComponent = new VoxelContainerComponent(this, 32);
             VoxelRenderComponent voxRenderComponent = new VoxelRenderComponent(this);
-            VoxelGeneratorComponent voxGeneratorComponent = new VoxelGeneratorComponent(this);
         }
     }
 }
