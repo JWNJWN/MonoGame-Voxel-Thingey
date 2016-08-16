@@ -22,7 +22,7 @@ namespace Voxel.Engine.World.Voxel
         void InitVoxelType()
         {
             byte i = 1;
-            /* Grass */ voxelIndex[i++] = new Vox(Color.LawnGreen, 1);
+            /* Grass */ voxelIndex[i++] = new Vox(Color.ForestGreen, 1);
             /* Dirt */ voxelIndex[i++] = new Vox(Color.SaddleBrown, 1);
             /* Stone */ voxelIndex[i++] = new Vox(Color.Gray, 1);
         }

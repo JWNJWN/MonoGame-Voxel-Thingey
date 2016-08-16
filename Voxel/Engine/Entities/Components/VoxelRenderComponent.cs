@@ -15,7 +15,7 @@ namespace Voxel.Engine.Entities.Components
 
         private Matrix scaleMatrix = Matrix.Identity;
 
-        VoxelContainerComponent voxelContainer = null;
+        VoxelContainerComponent voxContainer = null;
 
         List<VertexPositionColorNormal> vertices;
         List<int> indices;
@@ -40,10 +40,10 @@ namespace Voxel.Engine.Entities.Components
 
         protected override void Initialize()
         {
-            voxelContainer = Parent.GetComponent("VoxelContainer") as VoxelContainerComponent;
-            if (voxelContainer == null)
+            voxContainer = Parent.GetComponent("VoxelContainer") as VoxelContainerComponent;
+            if (voxContainer == null)
                 throw new Exception("Entity Contains " + GetName() + " but does not contain VoxelContainer.");
-
+            
             vertices = new List<VertexPositionColorNormal>();
             indices = new List<int>();
 
@@ -67,25 +67,25 @@ namespace Voxel.Engine.Entities.Components
 
                     int[] x = new int[3];
                     int[] q = new int[3];
-                    byte[] mask = new byte[voxelContainer.containerSize * voxelContainer.containerSize];
+                    byte[] mask = new byte[voxContainer.containerSize * voxContainer.containerSize];
 
                     q[d] = 1;
 
 
                     //Mask Generation
-                    for (x[d] = -1; x[d] < voxelContainer.containerSize;)
+                    for (x[d] = -1; x[d] < voxContainer.containerSize;)
                     {
                         int n = 0;
 
-                        for (x[v] = 0; x[v] < voxelContainer.containerSize; x[v]++)
+                        for (x[v] = 0; x[v] < voxContainer.containerSize; x[v]++)
                         {
-                            for (x[u] = 0; x[u] < voxelContainer.containerSize; x[u]++)
+                            for (x[u] = 0; x[u] < voxContainer.containerSize; x[u]++)
                             {
 
                                 byte vox = 0, vox1 = 0;
 
-                                if (x[d] >= 0) vox = voxelContainer.GetVoxel(x[0], x[1], x[2]);
-                                if (x[d] < voxelContainer.containerSize - 1) vox1 = voxelContainer.GetVoxel(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
+                                if (x[d] >= 0) vox = voxContainer.GetVoxel(x[0], x[1], x[2]);
+                                if (x[d] < voxContainer.containerSize - 1) vox1 = voxContainer.GetVoxel(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
                                 mask[n++] = (VoxelIndexer.voxelIndex[vox].color.A != 0 && VoxelIndexer.voxelIndex[vox1].color.A != 0 && VoxelIndexer.voxelIndex[vox].color.A == VoxelIndexer.voxelIndex[vox1].color.A) ? (byte)0 : back ? vox1 : vox;
                             }
                         }
@@ -95,20 +95,20 @@ namespace Voxel.Engine.Entities.Components
                         //Mesh Generation
                         n = 0;
 
-                        for (j = 0; j < voxelContainer.containerSize; j++)
+                        for (j = 0; j < voxContainer.containerSize; j++)
                         {
-                            for (i = 0; i < voxelContainer.containerSize;)
+                            for (i = 0; i < voxContainer.containerSize;)
                             {
                                 if (mask[n] != 0)
                                 {
-                                    for (w = 1; i + w < voxelContainer.containerSize && mask[n + w] != 0 && mask[n + w] == mask[n]; w++) { }
+                                    for (w = 1; i + w < voxContainer.containerSize && mask[n + w] != 0 && mask[n + w] == mask[n]; w++) { }
 
                                     bool done = false;
-                                    for (h = 1; j + h < voxelContainer.containerSize; h++)
+                                    for (h = 1; j + h < voxContainer.containerSize; h++)
                                     {
                                         for (k = 0; k < w; k++)
                                         {
-                                            if (mask[n + k + h * voxelContainer.containerSize] == 0 || mask[n + k + h * voxelContainer.containerSize] != mask[n])
+                                            if (mask[n + k + h * voxContainer.containerSize] == 0 || mask[n + k + h * voxContainer.containerSize] != mask[n])
                                             {
                                                 done = true;
                                                 break;
@@ -149,7 +149,7 @@ namespace Voxel.Engine.Entities.Components
                                     {
                                         for (k = 0; k < w; k++)
                                         {
-                                            mask[n + k + l * voxelContainer.containerSize] = 0;
+                                            mask[n + k + l * voxContainer.containerSize] = 0;
                                         }
                                     }
                                     i += w;
@@ -165,7 +165,7 @@ namespace Voxel.Engine.Entities.Components
                     }
                 }
             }
-            voxelContainer.dirty = false;
+            voxContainer.dirty = false;
             description.geoPrim = new MeshPrimitive(this.Parent.Manager.Game.GraphicsDevice, vertices, indices);
         }
 
@@ -191,7 +191,7 @@ namespace Voxel.Engine.Entities.Components
 
         public override void Update(GameTime gameTime)
         {
-            if(voxelContainer.dirty)
+            if(voxContainer.dirty)
                 GreedyMesh();
 
             description.worldTransform = this.scaleMatrix * this.Parent.rotation * Matrix.CreateTranslation(this.Parent.position*scaleMatrix.Scale);

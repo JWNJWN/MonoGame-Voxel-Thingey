@@ -7,115 +7,97 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using Voxel.Engine.World.Voxel;
-using Voxel.Engine.Physics;
 using Voxel.Engine.Entities;
 using Voxel.Engine.Managers;
+using Voxel.Engine.Render;
+using Voxel.Engine.GeometricPrimitives;
 
 using SharpNoise.Modules;
 
 namespace Voxel.Engine.World
 {
-    public class Chunk : BaseEntity
+    public class Chunk
     {
-        public static int cSize = 32;
+        #region Chunk Entity Variables
+        private ChunkManager manager;
+        private string name;
 
-        public List<VertexPositionColorNormal> cVerts;
-        public List<int> cTris;
+        public Vector3 position = Vector3.Zero;
+        public Matrix scaleMatrix = Matrix.Identity;
 
-        byte[,,] cVoxels;
-        
-        public List<AABB> boundingBoxes;
-
-        public Chunk(SceneManager sceneManager, string entityName) : base(sceneManager, entityName)
+        public ChunkManager Manager
         {
-            cVoxels = new byte[cSize, cSize, cSize];
+            get { return manager; }
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+        #endregion
 
-            cVerts = new List<VertexPositionColorNormal>();
-            cTris = new List<int>();
-
-            boundingBoxes = new List<AABB>();
-
-            TestFill();
-            GreedyMesh();
+        #region Chunk Voxel Container Variables
+        private byte[] voxels;
+        public byte[] Voxels
+        {
+            get { return voxels; }
         }
 
+        public int containerSize;
 
-        /*public Chunk(Vector3 position)
-        {
-            cPosition = position;
+        public bool dirty = false;
+        #endregion
 
-            cVoxels = new byte[cSize, cSize, cSize];
+        #region Chunk Render Variables
+        private RenderDescription description;
 
-            cVerts = new List<VertexPositionColorNormal>();
-            cTris = new List<int>();
+        List<VertexPositionColorNormal> vertices;
+        List<int> indices;
+        #endregion
 
-            boundingBoxes = new List<AABB>();
+        ///TODO : Add Perlin to ChunkManager and have it be universal
+        Perlin perlin;
 
-            TestFill();
-            GreedyMesh();
-            GreedyCollision();
-        }*/
+        public Chunk(ChunkManager chunkManager, Vector3 Position) : this(chunkManager, Position, 32, 1) { }
 
-        public byte GetVoxelByte(int x, int y, int z)
+        public Chunk(ChunkManager chunkManager, Vector3 Position, int ContainerSize, float scale)
         {
-            return cVoxels[x, y, z];
-        }
-        public byte GetVoxelByte(Vector3i vPos)
-        {
-            return cVoxels[vPos.x, vPos.y, vPos.z];
-        }
-        public Vox GetVoxel(int x, int y, int z)
-        {
-            return VoxelIndexer.voxelIndex[GetVoxelByte(x, y, z)];
-        }
-        public Vox GetVoxel(Vector3i vPos)
-        {
-            return VoxelIndexer.voxelIndex[GetVoxelByte(vPos)];
-        }
-        public Vox GetVoxel(byte vType)
-        {
-            return VoxelIndexer.voxelIndex[vType];
-        }
-        public void SetVoxel(int x, int y, int z, byte newVoxel)
-        {
-            cVoxels[x, y, z] = newVoxel;
-        }
-        public void SetVoxel(Vector3i vPos, byte newVoxel)
-        {
-            cVoxels[vPos.x, vPos.y, vPos.z] = newVoxel;
-        }
+            this.manager = chunkManager;
+            this.name = Position.ToString();
+            this.containerSize = ContainerSize;
+            this.scaleMatrix = Matrix.CreateScale(scale);
+            this.position = Position*containerSize;
 
-        public bool Contains(int x, int y, int z)
-        {
-            return x >= 0 && x < cSize && y >= 0 && y < cSize && z >= 0 && z < cSize;
-        }
-        public bool Contains(Vector3 pos)
-        {
-            return Contains((int)pos.X, (int)pos.Y, (int)pos.Z);
-        }
+            voxels = new byte[containerSize * containerSize * containerSize];
 
-        Random rng = new Random();
+            vertices = new List<VertexPositionColorNormal>();
+            indices = new List<int>();
 
-        Perlin perlin = new Perlin();
+            description = new RenderDescription();
 
-        void TestFill()
-        {
-            perlin.Seed = 13123131;
+            description.worldTransform = this.scaleMatrix * Matrix.CreateTranslation(this.position);
+
+            perlin = new Perlin();
+            perlin.Seed = 1414;
             perlin.OctaveCount = 1;
             perlin.Lacunarity = 1;
             perlin.Persistence = 1;
-            perlin.Frequency = 0.05;
+            perlin.Frequency = 0.02;
             perlin.Quality = SharpNoise.NoiseQuality.Standard;
 
-            for (int x = 0; x < cSize; x++)
+            Generate();
+        }
+        
+        private void Generate()
+        {
+            for(int x = 0; x < containerSize; x++)
             {
-                for (int z = 0; z < cSize; z++)
+                for(int z = 0; z < containerSize; z++)
                 {
-                    double pValue = (perlin.GetValue(x + position.X + 0.5, 0, z + position.Z + 0.5) + 1) / 2;
+                    double pValue = (perlin.GetValue((x + position.X + 0.5) * scaleMatrix.Scale.X, 0, (z + position.Z + 0.5) * scaleMatrix.Scale.Z) + 1) / 2;
 
-                    int height = (int)(pValue * cSize);
+                    int height = (int)(pValue * containerSize);
 
-                    for (int y = 0; y < cSize; y++)
+                    for (int y = 0; y < containerSize; y++)
                     {
                         if (y == height)
                             SetVoxel(x, y, z, 1);
@@ -126,128 +108,21 @@ namespace Voxel.Engine.World
             }
         }
 
-        void GreedyCollision()
+        public byte GetVoxel(int x, int y, int z)
         {
-            for (int d = 0; d < 3; d++)
-            {
-                int i, j, k, l, w, h, u = (d + 1) % 3, v = (d + 2) % 3;
-
-                int[] x = new int[3];
-                int[] q = new int[3];
-
-                q[d] = 1;
-                for (x[d] = -1; x[d] < cSize;)
-                {
-                    int n = 0;
-                    bool[] mask = new bool[cSize * cSize];
-                    bool[] b = new bool[cSize * cSize];
-                    for (x[v] = 0; x[v] < cSize; x[v]++)
-                    {
-                        for (x[u] = 0; x[u] < cSize; x[u]++, n++)
-                        {
-                            bool vox = false, vox1 = false;
-
-                            if (x[d] >= 0) vox = GetVoxelByte(x[0], x[1], x[2]) != 0;
-                            if (x[d] < cSize - 1) vox1 = GetVoxelByte(x[0] + q[0], x[1] + q[1], x[2] + q[2]) != 0;
-
-                            if (vox && vox1)
-                            {
-                                mask[n] = false;
-                                b[n] = false;
-                            }
-                            else if (vox)
-                            {
-                                mask[n] = true;
-                                b[n] = true;
-                            }
-                            else if (vox1)
-                            {
-                                mask[n] = true;
-                                b[n] = false;
-                            }
-                        }
-                    }
-
-                    x[d]++;
-
-                    //Mesh Generation
-                    n = 0;
-
-                    for (j = 0; j < cSize; j++)
-                    {
-                        for (i = 0; i < cSize;)
-                        {
-                            if (mask[n])
-                            {
-                                for (w = 1; i + w < cSize && mask[n + w] != false && mask[n + w] == mask[n]; w++) { }
-
-                                bool done = false;
-                                for (h = 1; j + h < cSize; h++)
-                                {
-                                    for (k = 0; k < w; k++)
-                                    {
-                                        if (!mask[n + k + h * cSize] || mask[n + k + h * cSize] != mask[n])
-                                        {
-                                            done = true;
-                                            break;
-                                        }
-                                    }
-                                    if (done) break;
-                                }
-
-                                x[u] = i;
-                                x[v] = j;
-
-                                int[] du = new int[3];
-                                int[] dv = new int[3];
-
-                                du[u] = w;
-                                dv[v] = h;
-
-                                Vector3[] vPos = {
-                                        new Vector3(x[0], x[1], x[2]),
-                                        new Vector3(x[0] + du[0], x[1] + du[1], x[2] + du[2]),
-                                        new Vector3(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2]),
-                                        new Vector3(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2])
-                                    };
-
-
-                                Vector3 vect1 = vPos[1] - vPos[0];
-                                Vector3 vect2 = vPos[2] - vPos[0];
-
-                                Vector3 normal = Vector3.Cross(vect1, vect2);
-                                normal.Normalize();
-                                if (b[n])
-                                    normal = -normal;
-                                vPos[2] += normal;
-
-                                boundingBoxes.Add(new AABB(vPos));
-
-                                for (l = 0; l < h; l++)
-                                {
-                                    for (k = 0; k < w; k++)
-                                    {
-                                        mask[n + k + l * cSize] = false;
-                                        b[n+k+l*cSize] = false;
-                                    }
-                                }
-                                i += w;
-                                n += w;
-                            }
-                            else
-                            {
-                                i++;
-                                n++;
-                            }
-                        }
-
-                    }
-                }
-            }
+            return Voxels[x + y * containerSize + z * containerSize * containerSize];
         }
 
-        void GreedyMesh()
+        public void SetVoxel(int x, int y, int z, byte voxel)
         {
+            Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
+            dirty = true;
+        }
+
+        private void GreedyMesh()
+        {
+            vertices.Clear();
+            indices.Clear();
             for (bool back = true, b = false; b != back; back = back && b, b = !b)
             {
                 for (int d = 0; d < 3; d++)
@@ -256,26 +131,26 @@ namespace Voxel.Engine.World
 
                     int[] x = new int[3];
                     int[] q = new int[3];
-                    byte[] mask = new byte[cSize * cSize];
+                    byte[] mask = new byte[containerSize * containerSize];
 
                     q[d] = 1;
 
 
                     //Mask Generation
-                    for (x[d] = -1; x[d] < cSize;)
+                    for (x[d] = -1; x[d] < containerSize;)
                     {
                         int n = 0;
 
-                        for (x[v] = 0; x[v] < cSize; x[v]++)
+                        for (x[v] = 0; x[v] < containerSize; x[v]++)
                         {
-                            for (x[u] = 0; x[u] < cSize; x[u]++)
+                            for (x[u] = 0; x[u] < containerSize; x[u]++)
                             {
 
                                 byte vox = 0, vox1 = 0;
 
-                                if (x[d] >= 0) vox = GetVoxelByte(x[0], x[1], x[2]);
-                                if (x[d] < cSize - 1) vox1 = GetVoxelByte(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
-                                mask[n++] = (GetVoxel(vox).color.A != 0 && GetVoxel(vox1).color.A != 0 && GetVoxel(vox).color.A == GetVoxel(vox1).color.A) ? (byte)0 : back ? vox1 : vox;
+                                if (x[d] >= 0) vox = GetVoxel(x[0], x[1], x[2]);
+                                if (x[d] < containerSize - 1) vox1 = GetVoxel(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
+                                mask[n++] = (VoxelIndexer.voxelIndex[vox].color.A != 0 && VoxelIndexer.voxelIndex[vox1].color.A != 0 && VoxelIndexer.voxelIndex[vox].color.A == VoxelIndexer.voxelIndex[vox1].color.A) ? (byte)0 : back ? vox1 : vox;
                             }
                         }
 
@@ -284,20 +159,20 @@ namespace Voxel.Engine.World
                         //Mesh Generation
                         n = 0;
 
-                        for (j = 0; j < cSize; j++)
+                        for (j = 0; j < containerSize; j++)
                         {
-                            for (i = 0; i < cSize;)
+                            for (i = 0; i < containerSize;)
                             {
                                 if (mask[n] != 0)
                                 {
-                                    for (w = 1; i + w < cSize && mask[n + w] != 0 && mask[n + w] == mask[n]; w++) { }
+                                    for (w = 1; i + w < containerSize && mask[n + w] != 0 && mask[n + w] == mask[n]; w++) { }
 
                                     bool done = false;
-                                    for (h = 1; j + h < cSize; h++)
+                                    for (h = 1; j + h < containerSize; h++)
                                     {
                                         for (k = 0; k < w; k++)
                                         {
-                                            if (mask[n + k + h * cSize] == 0 || mask[n + k + h * cSize] != mask[n])
+                                            if (mask[n + k + h * containerSize] == 0 || mask[n + k + h * containerSize] != mask[n])
                                             {
                                                 done = true;
                                                 break;
@@ -322,17 +197,23 @@ namespace Voxel.Engine.World
                                         new Vector3(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2])
                                     };
 
+                                    Vector3 a = vPos[1] - vPos[0];
+                                    Vector3 a1 = vPos[3] - vPos[0];
+
+                                    Vector3 normal = new Vector3((a.Y * a1.Z) - (a.Z * a1.Y), (a.Z * a1.X) - (a.X * a1.Z), (a.X * a1.Y) - (a.Y * a1.X));
+                                    normal.Normalize();
+
                                     if (back)
-                                        DrawFace(vPos[0], vPos[1], vPos[2], vPos[3], mask[n]);
+                                        DrawFace(vPos[0], vPos[1], vPos[2], vPos[3], mask[n], -normal);
                                     else
-                                        DrawFace(vPos[3], vPos[2], vPos[1], vPos[0], mask[n]);
+                                        DrawFace(vPos[3], vPos[2], vPos[1], vPos[0], mask[n], normal);
 
 
                                     for (l = 0; l < h; l++)
                                     {
                                         for (k = 0; k < w; k++)
                                         {
-                                            mask[n + k + l * cSize] = 0;
+                                            mask[n + k + l * containerSize] = 0;
                                         }
                                     }
                                     i += w;
@@ -344,39 +225,43 @@ namespace Voxel.Engine.World
                                     n++;
                                 }
                             }
-
                         }
                     }
                 }
             }
+            description.geoPrim = new MeshPrimitive(Manager.Game.GraphicsDevice, vertices, indices);
         }
 
-        void DrawFace(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, byte voxel)
+        void DrawFace(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, byte voxel, Vector3 normal)
         {
-            Vector3 a = v2 - v1;
-            Vector3 b = v3 - v1;
+            int index = vertices.Count;
 
-            Vector3 normal = Vector3.Cross(a, b);
+            vertices.Add(new VertexPositionColorNormal(v1, VoxelIndexer.voxelIndex[voxel].color, normal));
+            vertices.Add(new VertexPositionColorNormal(v2, VoxelIndexer.voxelIndex[voxel].color, normal));
+            vertices.Add(new VertexPositionColorNormal(v3, VoxelIndexer.voxelIndex[voxel].color, normal));
+            vertices.Add(new VertexPositionColorNormal(v4, VoxelIndexer.voxelIndex[voxel].color, normal));
 
-            v1 += position;
-            v2 += position;
-            v3 += position;
-            v4 += position;
+            indices.Add(index);
+            indices.Add(index + 1);
+            indices.Add(index + 2);
 
-            int index = cVerts.Count;
+            indices.Add(index);
+            indices.Add(index + 2);
+            indices.Add(index + 3);
+        }
 
-            cVerts.Add(new VertexPositionColorNormal(v1, GetVoxel(voxel).color, normal));
-            cVerts.Add(new VertexPositionColorNormal(v2, GetVoxel(voxel).color, normal));
-            cVerts.Add(new VertexPositionColorNormal(v3, GetVoxel(voxel).color, normal));
-            cVerts.Add(new VertexPositionColorNormal(v4, GetVoxel(voxel).color, normal));
+        public void Update(GameTime gameTime)
+        {
+            if (dirty)
+                GreedyMesh();
 
-            cTris.Add(index);
-            cTris.Add(index + 1);
-            cTris.Add(index + 2);
+            description.worldTransform = this.scaleMatrix * Matrix.CreateTranslation(this.position);
+        }
 
-            cTris.Add(index);
-            cTris.Add(index + 2);
-            cTris.Add(index + 3);
+        public void Draw(GameTime gameTime, List<RenderDescription> renderDescriptions)
+        {
+            renderDescriptions.Add(description);
+            dirty = false;
         }
     }
 }

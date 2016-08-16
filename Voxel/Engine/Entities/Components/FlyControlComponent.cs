@@ -3,18 +3,22 @@ using Microsoft.Xna.Framework.Input;
 
 using System;
 
+using Voxel.Engine.Managers;
+
 namespace Voxel.Engine.Entities.Components
 {
     public class FlyControlComponent : BaseComponent
     {
         float speed;
+        float speedMultiplier;
 
         KeyboardState currentKeyboardState;
         KeyboardState previousKeyboardState;
 
-        public FlyControlComponent(BaseEntity parentEntity, float movementSpeed) : base(parentEntity)
+        public FlyControlComponent(BaseEntity parentEntity, float movementSpeed, float speedMultiplier) : base(parentEntity)
         {
             speed = movementSpeed;
+            this.speedMultiplier = speedMultiplier;
             Initialize();
         }
 
@@ -22,11 +26,10 @@ namespace Voxel.Engine.Entities.Components
         {
             return "FlyControl";
         }
-
+        
         protected override void Initialize()
         {
             currentKeyboardState = Keyboard.GetState();
-
             base.Initialize();
         }
 
@@ -45,7 +48,11 @@ namespace Voxel.Engine.Entities.Components
                 Parent.position += Parent.rotation.Left * speed * delta;
             if (currentKeyboardState.IsKeyDown(Keys.D))
                 Parent.position += Parent.rotation.Right * speed * delta;
-            
+
+            if (currentKeyboardState.IsKeyDown(Keys.LeftShift) && !previousKeyboardState.IsKeyDown(Keys.LeftShift))
+                speed *= speedMultiplier;
+            if (previousKeyboardState.IsKeyDown(Keys.LeftShift) && currentKeyboardState.IsKeyUp(Keys.LeftShift))
+                speed /= speedMultiplier;
         }
     }
 }

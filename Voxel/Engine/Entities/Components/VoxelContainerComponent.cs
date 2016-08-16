@@ -14,11 +14,7 @@ namespace Voxel.Engine.Entities.Components
         public byte[] Voxels
         {
             get { return voxels; }
-            set
-            {
-                voxels = value;
-                dirty = true;
-            }
+            set { voxels = value; }
         }
         public int containerSize;
 
@@ -28,7 +24,6 @@ namespace Voxel.Engine.Entities.Components
         {
             containerSize = ContainerSize;
             Initialize();
-            SetVoxel(0, 0, 0, 2);
         }
 
         protected override void Initialize()
@@ -46,6 +41,7 @@ namespace Voxel.Engine.Entities.Components
         public void SetVoxel(int x, int y, int z, byte voxel)
         {
             Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
+            dirty = true;
         }
 
         protected override string GetName()

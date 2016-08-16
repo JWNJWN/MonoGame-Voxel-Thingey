@@ -10,8 +10,9 @@ namespace Voxel.Engine.Entities
         public PlayerEntity(SceneManager sceneManager, string entityName, Vector3 position) : base(sceneManager, entityName)
         {
             CameraComponent camComp = new CameraComponent(this);
-            FlyControlComponent flyComp = new FlyControlComponent(this, 15);
+            FlyControlComponent flyComp = new FlyControlComponent(this, 30, 1.5f);
             MouseLookComponent mouseLookComp = new MouseLookComponent(this, 0.5f);
+            ChunkLoaderComponent chunkLoadComp = new ChunkLoaderComponent(this, 8);
 
             this.position = position;
         }

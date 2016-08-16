@@ -46,15 +46,12 @@
     <StartupObject>Voxel.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Engine\Camera\Camera.cs" />
-    <Compile Include="Engine\Camera\FlyCam.cs" />
-    <Compile Include="Engine\Camera\PlayerCamera.cs" />
     <Compile Include="Engine\EngineCommon.cs" />
-    <Compile Include="Engine\Entities\ActionState.cs" />
     <Compile Include="Engine\Entities\BaseEntity.cs" />
     <Compile Include="Engine\Entities\ChunkEntity.cs" />
     <Compile Include="Engine\Entities\Components\BaseComponent.cs" />
     <Compile Include="Engine\Entities\Components\CameraComponent.cs" />
+    <Compile Include="Engine\Entities\Components\ChunkLoaderComponent.cs" />
     <Compile Include="Engine\Entities\Components\FlyControlComponent.cs" />
     <Compile Include="Engine\Entities\Components\Controllable.cs" />
     <Compile Include="Engine\Entities\Components\MouseLookComponent.cs" />
@@ -62,7 +59,6 @@
     <Compile Include="Engine\Entities\Components\VoxelContainerComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelGeneratorComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelRenderComponent.cs" />
-    <Compile Include="Engine\Entities\Entity.cs" />
     <Compile Include="Engine\Entities\PlayerEntity.cs" />
     <Compile Include="Engine\GeometricPrimitives\BezierPrimitive.cs" />
     <Compile Include="Engine\GeometricPrimitives\CubePrimitive.cs" />
@@ -75,26 +71,9 @@
     <Compile Include="Engine\Managers\BaseManager.cs" />
     <Compile Include="Engine\Managers\ChunkManager.cs" />
     <Compile Include="Engine\Managers\RenderManager.cs" />
-    <Compile Include="Engine\Object\Primitives.cs" />
-    <Compile Include="Engine\Physics\AABB.cs" />
-    <Compile Include="Engine\Physics\Collider.cs" />
-    <Compile Include="Engine\Physics\Collision.cs" />
-    <Compile Include="Engine\Physics\ForceType.cs" />
-    <Compile Include="Engine\Physics\Hit.cs" />
-    <Compile Include="Engine\Physics\PhysicsObject.cs" />
-    <Compile Include="Engine\Physics\Segment.cs" />
-    <Compile Include="Engine\Physics\Sweep.cs" />
-    <Compile Include="Engine\Player.cs" />
-    <Compile Include="Engine\Render\FullScreenQuad.cs" />
     <Compile Include="Engine\Render\RenderDescription.cs" />
-    <Compile Include="Engine\Scene\Scene.cs" />
     <Compile Include="Engine\Managers\SceneManager.cs" />
-    <Compile Include="Engine\UI\DrawHandler.cs" />
-    <Compile Include="Engine\UI\FrameRateCounter.cs" />
-    <Compile Include="Engine\UI\Menu\MenuComponent.cs" />
-    <Compile Include="Engine\UI\PlayerDebug.cs" />
     <Compile Include="Engine\VertexType\VertexPositionColorNormal.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="Libraries\SharpNoise\Builders\CylinderNoiseMapBuilder.cs" />
     <Compile Include="Libraries\SharpNoise\Builders\LinearNoiseCubeBuilder.cs" />
     <Compile Include="Libraries\SharpNoise\Builders\NoiseCubeBuilder.cs" />
@@ -152,7 +131,6 @@
     <Compile Include="Engine\World\Voxel\Vox.cs" />
     <Compile Include="Engine\World\Voxel\VoxelIndexer.cs" />
     <Compile Include="Engine\World\Chunk.cs" />
-    <Compile Include="Engine\World\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BEPUphysics">

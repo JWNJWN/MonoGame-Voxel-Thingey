@@ -8,6 +8,8 @@ using Voxel.Engine.Entities;
 using Voxel.Engine.Entities.Components;
 using Voxel.Engine.Render;
 
+using Voxel.Engine.World;
+
 namespace Voxel.Engine.Managers
 {
     public class RenderManager : BaseManager
@@ -61,6 +63,10 @@ namespace Voxel.Engine.Managers
             if (sceneMgr == null)
                 throw new Exception("Scene Manager not registered properly to the game engine.");
 
+            ChunkManager chunkMgr = this.Game.GetManager("Chunk") as ChunkManager;
+            if (chunkMgr == null)
+                throw new Exception("Chunk Manager not registered properly to the game engine.");
+
             BaseEntity cameraEntity = sceneMgr.GetEntity(currentCameraEntityName);
             if (cameraEntity == null)
                 throw new Exception("A camera entity must always exist if we are trying to render a scene");
@@ -77,6 +83,13 @@ namespace Voxel.Engine.Managers
             Dictionary<string, BaseEntity> entities = sceneMgr.Entities;
 
             foreach (KeyValuePair<string, BaseEntity> pair in entities)
+            {
+                (pair.Value).Draw(gameTime, renderDescriptions);
+            }
+
+            Dictionary<Vector3, Chunk> chunks = chunkMgr.Chunks;
+
+            foreach (KeyValuePair<Vector3, Chunk> pair in chunks)
             {
                 (pair.Value).Draw(gameTime, renderDescriptions);
             }

@@ -13,7 +13,8 @@ namespace Voxel.Engine.Entities.Components
         Perlin perlin;
 
         VoxelContainerComponent voxelContainer;
-
+        VoxelRenderComponent voxelRender;
+        
         public VoxelGeneratorComponent(BaseEntity parentEntity) : base(parentEntity)
         {
             Initialize();
@@ -30,6 +31,10 @@ namespace Voxel.Engine.Entities.Components
             if (voxelContainer == null)
                 throw new Exception("Entity Contains " + GetName() + " but does not contain VoxelContainer.");
 
+            voxelRender = Parent.GetComponent("VoxelRender") as VoxelRenderComponent;
+            if (voxelRender == null)
+                throw new Exception("Entity Contains " + GetName() + " but does not contain VoxelRenderer.");
+
             perlin = new Perlin();
             perlin.Seed = 1414;
             perlin.OctaveCount = 1;
@@ -42,7 +47,7 @@ namespace Voxel.Engine.Entities.Components
             {
                 for (int z = 0; z < voxelContainer.containerSize; z++)
                 {
-                    double pValue = (perlin.GetValue(x + Parent.position.X + 0.5, 0, z + Parent.position.Z + 0.5) + 1) / 2;
+                    double pValue = (perlin.GetValue((x + Parent.position.X + 0.5) * voxelRender.Scale.Scale.X, 0, (z + Parent.position.Z + 0.5) * voxelRender.Scale.Scale.Z) + 1) / 2;
 
                     int height = (int)(pValue * voxelContainer.containerSize);
 
@@ -55,7 +60,6 @@ namespace Voxel.Engine.Entities.Components
                     }
                 }
             }
-
             base.Initialize();
         }
     }

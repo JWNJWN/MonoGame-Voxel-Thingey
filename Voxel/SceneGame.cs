@@ -9,7 +9,6 @@ namespace Voxel
 {
     public class SceneGame : Game
     {
-
         private GraphicsDeviceManager graphics;
         public GraphicsDeviceManager Graphics
         {
@@ -37,6 +36,7 @@ namespace Voxel
         {
             SceneManager sceneManager = new SceneManager(this);
             RenderManager renderManager = new RenderManager(this);
+            ChunkManager chunkManager = new ChunkManager(this);
 
             base.Initialize();
         }
