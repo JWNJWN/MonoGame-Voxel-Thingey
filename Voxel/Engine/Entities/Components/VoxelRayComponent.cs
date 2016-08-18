@@ -60,14 +60,14 @@ namespace Voxel.Engine.Entities.Components
             if (diff == Vector3.Zero)
                 throw new Exception("Raycast in Zero Direction");
 
-            float radius = 5 / (float)Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y + diff.Z + diff.Z);
+            float radius = 1 / (float)Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y + diff.Z + diff.Z);
 
             while (true)
             {
-                Chunk currentChunk = chunkMgr.GetChunk(new Vector3((int)Math.Floor(origin.X / 32), (int)Math.Floor(origin.Y / 32), (int)Math.Floor(origin.Z / 32)));
+                Chunk currentChunk = chunkMgr.GetChunk((int)origin.X, (int)origin.Y, (int)origin.Z);
                 if (currentChunk != null)
                 {
-                    Vector3i voxelPosition = new Vector3i(origin - currentChunk.position);
+                    Vector3i voxelPosition = new Vector3i(origin);
                     if (currentChunk.GetVoxel(voxelPosition.x, voxelPosition.y, voxelPosition.z) > 0)
                     {
                         if (!t)
@@ -76,17 +76,6 @@ namespace Voxel.Engine.Entities.Components
                         }
                         else
                         {
-                            /*for(int x = voxelPosition.x - 5; x < voxelPosition.x + 5; x++)
-                            {
-                                for(int z= voxelPosition.z - 5; z < voxelPosition.z + 5; z++)
-                                {
-                                    for(int y = voxelPosition.y; y < voxelPosition.y + 10; y++)
-                                    {
-                                        currentChunk.SetVoxel(x, y, z, 3);
-                                    }
-                                }
-                            }*/
-
                             currentChunk.SetVoxel(voxelPosition.x + (int)face.X, voxelPosition.y + (int)face.Y, voxelPosition.z + (int)face.Z, 3);
                         }
                         break;
@@ -160,7 +149,7 @@ namespace Voxel.Engine.Entities.Components
 
         float mod(float val, int mod)
         {
-            return (val % mod + mod) % mod;
+            return ((val % mod) + mod) % mod;
         }
     }
 }

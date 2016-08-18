@@ -40,10 +40,10 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 	float3 normal = normalize(input.Normal);
 	float3 lightDirection = normalize(LightDirection);
 
-	float3 NdotL = max(-1, dot(normal, lightDirection));
-	float3 ambient = LightAmbient * input.Color;
+	float3 NdotL = max(0, dot(normal, lightDirection));
+	float3 ambient = LightAmbient * input.Color.xyz;
 
-	float3 diffuse = pow(NdotL * LightColor * input.Color, Gamma);
+	float3 diffuse = pow(NdotL * LightColor * input.Color.xyz, Gamma);
 	float4 c = float4(diffuse + ambient, input.Color.a);
 
 	
@@ -58,15 +58,6 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	return input.Color;
 }
 
-technique VoxelEffect
-{
-	pass P0
-	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
-	}
-};
-
 VertexShaderOutput NormalVS(VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
@@ -76,7 +67,7 @@ VertexShaderOutput NormalVS(VertexShaderInput input)
 	float3 normal = normalize(mul(input.Normal, WorldInverseTranspose));
 
 	output.Position = mul(input.Position, WorldViewProjection);
-	output.Color = float4(normal/2 + 0.5, 1);
+	output.Color = float4(normal/2 + 0.5, 0.5);
 
 	return output;
 }
@@ -104,7 +95,7 @@ VertexShaderOutput DepthVS(VertexShaderInput input)
 	float3 normal = normalize(mul(input.Normal, WorldInverseTranspose));
 
 	output.Position = mul(input.Position, WorldViewProjection);
-	output.Color =  1 - output.Position.w/35;
+	output.Color =  1 - output.Position.w/32;
 
 	return output;
 }
@@ -120,5 +111,54 @@ technique Depth
 	{
 		VertexShader = compile VS_SHADERMODEL DepthVS();
 		PixelShader = compile PS_SHADERMODEL DepthPS();
+	}
+};
+
+struct SelectInput
+{
+	float4 Position : SV_POSITION;
+	float3 Normal : NORMAL;
+	float4 Color : COLOR0;
+};
+
+struct SelectOutput
+{
+	float4 Position : SV_POSITION;
+	float3 vPosition : NORMAL;
+	float3 Normal : NORMAL1;
+};
+
+SelectOutput SelectVS(VertexShaderInput input) 
+{
+	SelectOutput output = (SelectOutput)0;
+	matrix WorldViewProjection = mul(mul(World, View), Projection);
+
+
+	output.Position = mul(input.Position, WorldViewProjection);
+	output.vPosition = input.Position;
+	output.Normal = input.Normal;
+
+	return output;
+}
+
+float4 SelectPS(SelectOutput input) : COLOR
+{
+	float3 voxelPosition = floor(input.vPosition) - clamp(input.Normal, 0, 1);
+	
+
+	return float4(voxelPosition.x/32, voxelPosition.y/32, voxelPosition.z/32, 1);
+}
+
+technique VoxelEffect
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL MainPS();
+	}
+	pass P1
+	{
+		VertexShader = compile VS_SHADERMODEL SelectVS();
+		PixelShader = compile PS_SHADERMODEL SelectPS();
 	}
 };

@@ -65,7 +65,7 @@ namespace Voxel.Engine.World
             this.name = Position.ToString();
             this.containerSize = ContainerSize;
             this.scaleMatrix = Matrix.CreateScale(scale);
-            this.position = Position*containerSize;
+            this.position = Position * containerSize;
 
             voxels = new byte[containerSize * containerSize * containerSize];
 
@@ -86,14 +86,14 @@ namespace Voxel.Engine.World
 
             Generate();
         }
-        
+
         private void Generate()
         {
-            for(int x = 0; x < containerSize; x++)
+            for (int x = (int)position.X; x < containerSize + position.X; x++)
             {
-                for(int z = 0; z < containerSize; z++)
+                for (int z = (int)position.Z; z < containerSize + position.Z; z++)
                 {
-                    double pValue = (perlin.GetValue((x + position.X + 0.5) * scaleMatrix.Scale.X, 0, (z + position.Z + 0.5) * scaleMatrix.Scale.Z) + 1) / 2;
+                    double pValue = (perlin.GetValue((x + 0.5) * scaleMatrix.Scale.X, 0, (z + 0.5) * scaleMatrix.Scale.Z) + 1) / 2;
 
                     int height = (int)(pValue * containerSize);
 
@@ -110,20 +110,47 @@ namespace Voxel.Engine.World
 
         public byte GetVoxel(int x, int y, int z)
         {
-            return Voxels[x + y * containerSize + z * containerSize * containerSize];
+            if(InRange(x,y,z)) {
+                x = (int)mod(x, containerSize);
+                y = (int)mod(y, containerSize);
+                z = (int)mod(z, containerSize);
+
+                return Voxels[x + y * containerSize + z * containerSize * containerSize];
+            }else
+            {
+                Chunk tempChunk = manager.GetChunk(x, y, z);
+                if (tempChunk == null)
+                    return 0;
+                return tempChunk.GetVoxel(x, y, z);
+            }
         }
 
         public void SetVoxel(int x, int y, int z, byte voxel)
         {
-            Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
-            dirty = true;
+            if(InRange(x,y,z))
+            {
+                x = (int)mod(x, containerSize);
+                y = (int)mod(y, containerSize);
+                z = (int)mod(z, containerSize);
+
+                Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
+                dirty = true;
+            }else
+            {
+                manager.GetChunk(x, y, z).SetVoxel(x, y, z, voxel);
+            }
+        }
+
+        float mod(float val, int mod)
+        {
+            return ((val % mod) + mod) % mod;
         }
 
         private bool InRange(int x, int y, int z)
         {
-            bool isX = x > position.X && x < position.X + containerSize;
-            bool isY = y > position.Y && y < position.Y + containerSize;
-            bool isZ = z > position.Z && z < position.Z + containerSize;
+            bool isX = x >= position.X && x < position.X + containerSize;
+            bool isY = y >= position.Y && y < position.Y + containerSize;
+            bool isZ = z >= position.Z && z < position.Z + containerSize;
             return isX && isY && isZ;
         }
 
@@ -131,6 +158,8 @@ namespace Voxel.Engine.World
         {
             vertices.Clear();
             indices.Clear();
+
+            int[] cPos = new int[3] { (int)position.X, (int)position.Y, (int)position.Z };
             for (bool back = true, b = false; b != back; back = back && b, b = !b)
             {
                 for (int d = 0; d < 3; d++)
@@ -156,8 +185,8 @@ namespace Voxel.Engine.World
 
                                 byte vox = 0, vox1 = 0;
 
-                                if (x[d] >= 0) vox = GetVoxel(x[0], x[1], x[2]);
-                                if (x[d] < containerSize - 1) vox1 = GetVoxel(x[0] + q[0], x[1] + q[1], x[2] + q[2]);
+                                vox = GetVoxel(x[0] + cPos[0], x[1] + cPos[1], x[2] + cPos[2]);
+                                vox1 = GetVoxel(x[0] + q[0] + cPos[0], x[1] + q[1] + cPos[1], x[2] + q[2] + cPos[2]);
                                 mask[n++] = (VoxelIndexer.voxelIndex[vox].color.A != 0 && VoxelIndexer.voxelIndex[vox1].color.A != 0 && VoxelIndexer.voxelIndex[vox].color.A == VoxelIndexer.voxelIndex[vox1].color.A) ? (byte)0 : back ? vox1 : vox;
                             }
                         }

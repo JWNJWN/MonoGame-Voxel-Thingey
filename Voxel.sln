@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voxel", "Voxel\Voxel.csproj", "{86B73A34-D80A-4847-AC46-18B286E7F501}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelPipeline", "VoxelPipeline\VoxelPipeline.csproj", "{6926D8FA-E795-4015-8393-27937D81781A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelPipeline", "VoxelPipeline\VoxelPipeline.csproj", "{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,18 +26,18 @@ Global
 		{86B73A34-D80A-4847-AC46-18B286E7F501}.SceneManager|Any CPU.ActiveCfg = SceneManager|x86
 		{86B73A34-D80A-4847-AC46-18B286E7F501}.SceneManager|x86.ActiveCfg = SceneManager|x86
 		{86B73A34-D80A-4847-AC46-18B286E7F501}.SceneManager|x86.Build.0 = SceneManager|x86
-		{6926D8FA-E795-4015-8393-27937D81781A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Debug|x86.Build.0 = Debug|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Release|x86.ActiveCfg = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.Release|x86.Build.0 = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.SceneManager|Any CPU.ActiveCfg = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.SceneManager|Any CPU.Build.0 = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.SceneManager|x86.ActiveCfg = Release|Any CPU
-		{6926D8FA-E795-4015-8393-27937D81781A}.SceneManager|x86.Build.0 = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.Release|x86.Build.0 = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.SceneManager|Any CPU.ActiveCfg = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.SceneManager|Any CPU.Build.0 = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.SceneManager|x86.ActiveCfg = Release|Any CPU
+		{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}.SceneManager|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

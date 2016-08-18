@@ -46,8 +46,8 @@ namespace Voxel.Engine.Managers
             VoxelIndexer voxIndex = new VoxelIndexer();
             
             PlayerEntity player = new PlayerEntity(this, EngineCommon.RootEntityName, Vector3.Zero);
-            player.position = new Vector3(5, 40, 5);
-            player.rotation = Matrix.CreateRotationY(MathHelper.ToRadians(45)) * Matrix.CreateRotationX(MathHelper.ToRadians(-45));
+            player.position = new Vector3(16, 40, 16);
+            player.rotation = Matrix.CreateRotationX(MathHelper.ToRadians(-89));
             AddEntityToScene(player);
             
         }

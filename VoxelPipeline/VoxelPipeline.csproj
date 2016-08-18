@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6926D8FA-E795-4015-8393-27937D81781A}</ProjectGuid>
+    <ProjectGuid>{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VoxelPipeline</RootNamespace>
@@ -43,9 +43,6 @@
     <Compile Include="ContentImporter1.cs" />
     <Compile Include="ContentProcessor1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TestFont.spritefont" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

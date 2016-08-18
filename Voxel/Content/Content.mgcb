@@ -19,9 +19,21 @@
 /processorParam:DebugMode=Auto
 /build:Effects/VoxelEffect.fx
 
-#begin Effects/HDR.fx
+#begin Effects/DeferredShading.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/HDR.fx
+/build:Effects/DeferredShading.fx
+
+#begin Effects/Composite.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Composite.fx
+
+#begin Effects/DirectionalLight.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/DirectionalLight.fx
 

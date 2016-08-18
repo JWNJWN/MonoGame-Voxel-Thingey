@@ -25,7 +25,7 @@ namespace Voxel.Engine.Managers
 
         protected override void Initialize()
         {
-            ///AddChunk(new Chunk(this, new Vector3(0, 0, 0)));
+            //AddChunk(new Chunk(this, new Vector3(0, 0, 0)));
             base.Initialize();
         }
 
@@ -46,6 +46,7 @@ namespace Voxel.Engine.Managers
             if (chunks.TryGetValue(chunk.position, out checkEntity))
                 throw new Exception("A chunk with position " + chunk.position + " already exists.");
             chunks.Add(chunk.position/32, chunk);
+            UpdateSurroundingChunks((int)chunk.position.X / 32, (int)chunk.position.Y / 32, (int)chunk.position.Z / 32);
         }
 
         public void RemoveChunk(Chunk chunk)
@@ -58,10 +59,44 @@ namespace Voxel.Engine.Managers
 
         public Chunk GetChunk(Vector3 chunkPosition)
         {
-            Chunk entity = null;
-            if (!chunks.TryGetValue(chunkPosition, out entity)) { }
-                //Console.WriteLine(new Exception("No chunk at position " + chunkPosition.ToString() + " exists in the scene."));
-            return entity;
+            Chunk chunk = null;
+            chunks.TryGetValue(chunkPosition, out chunk);
+            return chunk;
+        }
+
+        public Chunk GetChunk(int x, int y, int z)
+        {
+            Chunk chunk = null;
+            Vector3 chunkPosition = new Vector3((float)Math.Floor(x/32f), (float)Math.Floor(y / 32f), (float)Math.Floor(z / 32f));
+            chunks.TryGetValue(chunkPosition, out chunk);
+            return chunk;
+        }
+
+        private void UpdateSurroundingChunks(int x, int y, int z)
+        {
+            Chunk tempChunk = GetChunk(x + 1, y, z);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+            tempChunk = GetChunk(x - 1, y, z);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+            tempChunk = GetChunk(x, y + 1, z);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+            tempChunk = GetChunk(x, y - 1, z);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+            tempChunk = GetChunk(x, y, z + 1);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+            tempChunk = GetChunk(x, y, z - 1);
+            if (tempChunk != null)
+                tempChunk.dirty = true;
+        }
+
+        float mod(float val, int mod)
+        {
+            return ((val % mod) + mod) % mod;
         }
     }
 }
