@@ -54,9 +54,6 @@ namespace Voxel.Engine.World
         List<int> indices;
         #endregion
 
-        ///TODO : Add Perlin to ChunkManager and have it be universal
-        Perlin perlin;
-
         public Chunk(ChunkManager chunkManager, Vector3 Position) : this(chunkManager, Position, 32, 1) { }
 
         public Chunk(ChunkManager chunkManager, Vector3 Position, int ContainerSize, float scale)
@@ -75,15 +72,7 @@ namespace Voxel.Engine.World
             description = new RenderDescription();
 
             description.worldTransform = this.scaleMatrix * Matrix.CreateTranslation(this.position);
-
-            perlin = new Perlin();
-            perlin.Seed = 1414;
-            perlin.OctaveCount = 1;
-            perlin.Lacunarity = 1;
-            perlin.Persistence = 1;
-            perlin.Frequency = 0.008;
-            perlin.Quality = SharpNoise.NoiseQuality.Standard;
-
+            
             Generate();
         }
 
@@ -93,7 +82,7 @@ namespace Voxel.Engine.World
             {
                 for (int z = (int)position.Z; z < containerSize + position.Z; z++)
                 {
-                    double pValue = (perlin.GetValue((x + 0.5) * scaleMatrix.Scale.X, 0, (z + 0.5) * scaleMatrix.Scale.Z) + 1) / 2;
+                    double pValue = (manager.Perlin.GetValue((x + 0.5) * scaleMatrix.Scale.X, 0, (z + 0.5) * scaleMatrix.Scale.Z) + 1) / 2;
 
                     int height = (int)(pValue * containerSize);
 
@@ -156,12 +145,11 @@ namespace Voxel.Engine.World
             return isX && isY && isZ;
         }
 
-        private void GreedyMesh()
+        public void GreedyMesh()
         {
             vertices.Clear();
             indices.Clear();
-
-            int[] cPos = new int[3] { (int)position.X, (int)position.Y, (int)position.Z };
+            
             for (bool back = true, b = false; b != back; back = back && b, b = !b)
             {
                 for (int d = 0; d < 3; d++)
@@ -187,8 +175,8 @@ namespace Voxel.Engine.World
 
                                 byte vox = 0, vox1 = 0;
 
-                                vox = GetVoxel(x[0] + cPos[0], x[1] + cPos[1], x[2] + cPos[2]);
-                                vox1 = GetVoxel(x[0] + q[0] + cPos[0], x[1] + q[1] + cPos[1], x[2] + q[2] + cPos[2]);
+                                vox = GetVoxel(x[0] + (int)position.X, x[1] + (int)position.Y, x[2] + (int)position.Z);
+                                vox1 = GetVoxel(x[0] + q[0] + (int)position.X, x[1] + q[1] + (int)position.Y, x[2] + q[2] + (int)position.Z);
                                 mask[n++] = (VoxelIndexer.voxelIndex[vox].color.A != 0 && VoxelIndexer.voxelIndex[vox1].color.A != 0 && VoxelIndexer.voxelIndex[vox].color.A == VoxelIndexer.voxelIndex[vox1].color.A) ? (byte)0 : back ? vox1 : vox;
                             }
                         }
@@ -292,7 +280,8 @@ namespace Voxel.Engine.World
         public void Update(GameTime gameTime)
         {
             if (dirty)
-                GreedyMesh();
+                manager.Game.ThreadManager.QueueMesh(GreedyMesh);
+            dirty = false;
 
             description.worldTransform = this.scaleMatrix * Matrix.CreateTranslation(this.position);
         }
@@ -300,7 +289,6 @@ namespace Voxel.Engine.World
         public void Draw(GameTime gameTime, List<RenderDescription> renderDescriptions)
         {
             renderDescriptions.Add(description);
-            dirty = false;
         }
     }
 }

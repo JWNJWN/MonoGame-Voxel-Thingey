@@ -119,9 +119,9 @@ namespace Voxel.Engine.Managers
                 (pair.Value).Draw(gameTime, renderDescriptions);
             }
 
-            Dictionary<Vector3, Chunk> chunks = chunkMgr.Chunks;
+            Dictionary<Vector3, Chunk> chunks = new Dictionary<Vector3, Chunk>(chunkMgr.Chunks);
 
-            foreach (KeyValuePair<Vector3, Chunk> pair in chunks)
+            foreach (KeyValuePair<Vector3, Chunk> pair in chunkMgr.Chunks)
             {
                 (pair.Value).Draw(gameTime, renderDescriptions);
             }
@@ -297,6 +297,7 @@ namespace Voxel.Engine.Managers
             SetupGBuffer(gameTime);
 
             //GraphicsDevice.RasterizerState = new RasterizerState { FillMode = FillMode.Solid };
+            //Game.ThreadManager.QueueEvent(Lighting);
             Lighting();
 #if !DEBUG
             MakeFinal();

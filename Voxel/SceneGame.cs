@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Microsoft.Xna.Framework;
 
@@ -22,6 +23,12 @@ namespace Voxel
             get { return this.managers; }
         }
 
+        private ThreadManager threadManager;
+        public ThreadManager ThreadManager
+        {
+            get {  return threadManager; }
+        }
+
         public SceneGame()
         {
             this.graphics = new GraphicsDeviceManager(this);
@@ -35,6 +42,7 @@ namespace Voxel
 
         protected override void Initialize()
         {
+            threadManager = new ThreadManager(this);
             SceneManager sceneManager = new SceneManager(this);
             RenderManager renderManager = new RenderManager(this);
             ChunkManager chunkManager = new ChunkManager(this);

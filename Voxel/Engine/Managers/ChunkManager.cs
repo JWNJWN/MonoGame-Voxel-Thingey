@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Voxel.Engine.World;
+
+using SharpNoise.Modules;
 
 namespace Voxel.Engine.Managers
 {
@@ -16,16 +19,29 @@ namespace Voxel.Engine.Managers
             get { return chunks; }
         }
 
+        private Perlin perlin;
+        public Perlin Perlin
+        {
+            get { return perlin; }
+        }
+
         public ChunkManager(SceneGame game) : base(game)
         {
             this.chunks = new Dictionary<Vector3, Chunk>();
+            this.perlin = new Perlin();
 
             Initialize();
         }
 
         protected override void Initialize()
         {
-            //AddChunk(new Chunk(this, new Vector3(0, 0, 0)));
+            perlin.Seed = 1414;
+            perlin.OctaveCount = 1;
+            perlin.Lacunarity = 1;
+            perlin.Persistence = 1;
+            perlin.Frequency = 0.008;
+            perlin.Quality = SharpNoise.NoiseQuality.Standard;
+            
             base.Initialize();
         }
 
@@ -43,9 +59,8 @@ namespace Voxel.Engine.Managers
         public void AddChunk(Chunk chunk)
         {
             Chunk checkEntity = null;
-            if (chunks.TryGetValue(chunk.position, out checkEntity))
-                throw new Exception("A chunk with position " + chunk.position + " already exists.");
-            chunks.Add(chunk.position/32, chunk);
+            if (!chunks.TryGetValue(chunk.position, out checkEntity))
+                chunks.Add(chunk.position / 32, chunk);
             UpdateSurroundingChunks((int)chunk.position.X / 32, (int)chunk.position.Y / 32, (int)chunk.position.Z / 32);
         }
 
@@ -54,7 +69,7 @@ namespace Voxel.Engine.Managers
             Chunk checkEntity = null;
             if (!chunks.TryGetValue(chunk.position, out checkEntity))
                 throw new Exception("No chunk with position " + chunk.position + " exists in the scene to be removed.");
-            chunks.Remove(chunk.position/32);
+            chunks.Remove(chunk.position / 32);
         }
 
         public Chunk GetChunk(Vector3 chunkPosition)
@@ -67,29 +82,29 @@ namespace Voxel.Engine.Managers
         public Chunk GetChunk(int x, int y, int z)
         {
             Chunk chunk = null;
-            Vector3 chunkPosition = new Vector3((float)Math.Floor(x/32f), (float)Math.Floor(y / 32f), (float)Math.Floor(z / 32f));
+            Vector3 chunkPosition = new Vector3((float)Math.Floor(x / 32f), (float)Math.Floor(y / 32f), (float)Math.Floor(z / 32f));
             chunks.TryGetValue(chunkPosition, out chunk);
             return chunk;
         }
 
         private void UpdateSurroundingChunks(int x, int y, int z)
         {
-            Chunk tempChunk = GetChunk(x + 1, y, z);
+            Chunk tempChunk = GetChunk(new Vector3(x + 1, y, z));
             if (tempChunk != null)
                 tempChunk.dirty = true;
-            tempChunk = GetChunk(x - 1, y, z);
+            tempChunk = GetChunk(new Vector3(x - 1, y, z));
             if (tempChunk != null)
                 tempChunk.dirty = true;
-            tempChunk = GetChunk(x, y + 1, z);
+            tempChunk = GetChunk(new Vector3(x, y + 1, z));
             if (tempChunk != null)
                 tempChunk.dirty = true;
-            tempChunk = GetChunk(x, y - 1, z);
+            tempChunk = GetChunk(new Vector3(x, y - 1, z));
             if (tempChunk != null)
                 tempChunk.dirty = true;
-            tempChunk = GetChunk(x, y, z + 1);
+            tempChunk = GetChunk(new Vector3(x, y, z + 1));
             if (tempChunk != null)
                 tempChunk.dirty = true;
-            tempChunk = GetChunk(x, y, z - 1);
+            tempChunk = GetChunk(new Vector3(x, y, z - 1));
             if (tempChunk != null)
                 tempChunk.dirty = true;
         }

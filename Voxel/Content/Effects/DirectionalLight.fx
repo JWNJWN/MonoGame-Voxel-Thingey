@@ -66,24 +66,6 @@ Output MainVS(Input input)
 	return output;
 }
 
-float4 manualSample(sampler Sampler, float2 UV, float2 textureSize)
-{
-	float2 texelPos = textureSize * UV;
-	float2 lerps = frac(texelPos);
-	float texelSize = 1/textureSize;
-
-	float4 sourceVals[4];
-	sourceVals[0] = tex2D(Sampler, UV);
-	sourceVals[1] = tex2D(Sampler, UV + float2(texelSize, 0));
-	sourceVals[2] = tex2D(Sampler, UV + float2(0, texelSize)); 
-	sourceVals[3] = tex2D(Sampler, UV + float2(texelSize, texelSize));
-
-	float4 interpolated = lerp(lerp(sourceVals[0], sourceVals[1], lerps.x),
-							   lerp(sourceVals[2], sourceVals[3], lerps.x), lerps.y);
-	
-	return interpolated;
-}
-
 float4 Phong(float3 Position, float3 Normal, float SpecularIntensity, float SpecularPower)
 {
 	float3 Reflection = normalize(reflect(LightDirection, Normal));
@@ -107,7 +89,7 @@ float4 MainPS(Output input) : COLOR
 
 	//float SpecularIntensity = tex2D(gColor, input.UV).w;
 
-	float Depth = manualSample(gDepth, input.UV, GBufferTextureSize).x;
+	float Depth = tex2D(gDepth, input.UV);
 
 	float4 Position = 1;
 	Position.x = input.UV.x * 2 - 1;

@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="Engine\EngineCommon.cs" />
     <Compile Include="Engine\Entities\BaseEntity.cs" />
-    <Compile Include="Engine\Entities\ChunkEntity.cs" />
     <Compile Include="Engine\Entities\Components\BaseComponent.cs" />
     <Compile Include="Engine\Entities\Components\CameraComponent.cs" />
     <Compile Include="Engine\Entities\Components\ChunkLoaderComponent.cs" />
@@ -76,7 +75,6 @@
     <Compile Include="Engine\Entities\Components\RenderComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelContainerComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelRayComponent.cs" />
-    <Compile Include="Engine\Entities\Components\VoxelRenderComponent.cs" />
     <Compile Include="Engine\Entities\PlayerEntity.cs" />
     <Compile Include="Engine\GeometricPrimitives\BezierPrimitive.cs" />
     <Compile Include="Engine\GeometricPrimitives\CubePrimitive.cs" />
@@ -90,6 +88,7 @@
     <Compile Include="Engine\Managers\BaseManager.cs" />
     <Compile Include="Engine\Managers\ChunkManager.cs" />
     <Compile Include="Engine\Managers\RenderManager.cs" />
+    <Compile Include="Engine\Managers\ThreadManager.cs" />
     <Compile Include="Engine\Render\RenderDescription.cs" />
     <Compile Include="Engine\Managers\SceneManager.cs" />
     <Compile Include="Engine\VertexType\VertexPositionColorNormal.cs" />
