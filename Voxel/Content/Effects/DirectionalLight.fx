@@ -17,8 +17,6 @@ sampler gColor = sampler_state
     AddressU = CLAMP;
     AddressV = CLAMP;
     MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
 };
 sampler gNormal = sampler_state
 {
@@ -26,8 +24,6 @@ sampler gNormal = sampler_state
     AddressU = CLAMP;
     AddressV = CLAMP;
     MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
 };
 sampler gDepth = sampler_state
 {
@@ -35,8 +31,6 @@ sampler gDepth = sampler_state
     AddressU = CLAMP;
     AddressV = CLAMP;
     MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
 };
 
 matrix VPI;
@@ -67,7 +61,7 @@ Output MainVS(Input input)
 	Output output;
 
 	output.Position = float4(input.Position, 1);
-	output.UV = input.UV - float2(1/GBufferTextureSize.xy);
+	output.UV = input.UV;
 
 	return output;
 }

@@ -25,6 +25,7 @@ namespace Voxel
         public SceneGame()
         {
             this.graphics = new GraphicsDeviceManager(this);
+
             this.Content.RootDirectory = "Content";
 
             this.managers = new Dictionary<string, BaseManager>();

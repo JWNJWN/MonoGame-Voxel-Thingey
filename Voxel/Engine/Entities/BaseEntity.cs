@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Diagnostics;
+
 using Voxel.Engine.Render;
 using Voxel.Engine.Managers;
 using Voxel.Engine.Entities.Components;
@@ -42,7 +44,7 @@ namespace Voxel.Engine.Entities
         {
             BaseComponent checkComponent = null;
             if (components.TryGetValue(component.Name, out checkComponent))
-                throw new Exception("Component type " + component.Name + " already exists on this object: " + name);
+                Debug.Print("Component type " + component.Name + " already exists on this object: " + name);
             components.Add(component.Name, component);
         }
 
@@ -50,15 +52,15 @@ namespace Voxel.Engine.Entities
         {
             BaseComponent checkComponent = null;
             if (!components.TryGetValue(component.Name, out checkComponent))
-                throw new Exception("Component Type " + component.Name + " doesn't exist on this object: " + name);
+                Debug.Print("Component Type " + component.Name + " doesn't exist on this object: " + name);
             components.Remove(component.Name);
         }
 
         public BaseComponent GetComponent(string componentName)
         {
             BaseComponent component = null;
-            if(!components.TryGetValue(componentName, out component))
-                throw new Exception("Component Type " + component.Name + " doesn't exist on this object: " + name);
+            if (!components.TryGetValue(componentName, out component))
+                Debug.Print("Component Type " + componentName + " doesn't exist on this object: " + name);
             return component;
         }
 

@@ -136,8 +136,10 @@ namespace Voxel.Engine.World
                 Voxels[x + y * containerSize + z * containerSize * containerSize] = voxel;
                 dirty = true;
             }else
-            {
-                manager.GetChunk(x, y, z).SetVoxel(x, y, z, voxel);
+            { 
+                Chunk tempChunk = manager.GetChunk(x, y, z);
+                if (tempChunk != null)
+                    manager.GetChunk(x, y, z).SetVoxel(x, y, z, voxel);
             }
         }
 

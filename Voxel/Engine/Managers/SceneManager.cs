@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 using Voxel.Engine.Entities;
-using Voxel.Engine.Entities.Components;
+using Voxel.Engine.Entities.Components.Lights;
 using Voxel.Engine.GeometricPrimitives;
 
 using Voxel.Engine.World.Voxel;
@@ -47,9 +47,13 @@ namespace Voxel.Engine.Managers
             
             PlayerEntity player = new PlayerEntity(this, EngineCommon.RootEntityName, Vector3.Zero);
             player.position = new Vector3(16, 40, 16);
-            player.rotation = Matrix.CreateRotationX(MathHelper.ToRadians(-89));
             AddEntityToScene(player);
-            
+
+            BaseEntity directionalLight = new BaseEntity(this, "Sun");
+            directionalLight.position = Vector3.Zero;
+            directionalLight.rotation = Matrix.CreateRotationX(MathHelper.ToRadians(-45f)) * Matrix.CreateRotationY(MathHelper.ToRadians(30f));
+            directionalLight.AddComponent(new DirectionalLightComponent(directionalLight, Vector3.Zero, Color.White, 1f));
+            AddEntityToScene(directionalLight);
         }
 
         public override void Update(GameTime gameTime)
@@ -80,6 +84,20 @@ namespace Voxel.Engine.Managers
             if (!entities.TryGetValue(entityName, out entity))
                 throw new Exception("No entity named " + entityName + " exists in the scene.");
             return entity;
+        }
+
+        public List<Light> GetLights()
+        {
+            List<Light> tempLight = new List<Light>();
+            foreach (KeyValuePair<string, BaseEntity> pair in entities)
+            {
+                LightComponent light = (pair.Value).GetComponent("Light") as LightComponent;
+                if (light != null)
+                {
+                    tempLight.Add(new Light(light.Parent.position + light.offset, light.Parent.rotation, light.color, light.intensity, light.type));
+                }
+            }
+            return tempLight;
         }
     }
 }

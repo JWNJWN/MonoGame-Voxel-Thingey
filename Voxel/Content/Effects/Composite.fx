@@ -29,8 +29,6 @@ sampler lightMap = sampler_state
     Mipfilter = LINEAR;
 };
 
-float2 GBufferTextureSize;
-
 struct VertexShaderInput
 {
 	float3 Position : SV_POSITION;
@@ -48,7 +46,7 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
 	output.Position = float4(input.Position, 1);
-	output.UV = input.UV - float2(1/GBufferTextureSize.xy);
+	output.UV = input.UV;
 
 	return output;
 }

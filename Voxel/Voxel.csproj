@@ -68,8 +68,10 @@
     <Compile Include="Engine\Entities\Components\BaseComponent.cs" />
     <Compile Include="Engine\Entities\Components\CameraComponent.cs" />
     <Compile Include="Engine\Entities\Components\ChunkLoaderComponent.cs" />
+    <Compile Include="Engine\Entities\Components\Lights\DirectionalLightComponent.cs" />
     <Compile Include="Engine\Entities\Components\FlyControlComponent.cs" />
     <Compile Include="Engine\Entities\Components\Controllable.cs" />
+    <Compile Include="Engine\Entities\Components\Lights\LightComponent.cs" />
     <Compile Include="Engine\Entities\Components\MouseLookComponent.cs" />
     <Compile Include="Engine\Entities\Components\RenderComponent.cs" />
     <Compile Include="Engine\Entities\Components\VoxelContainerComponent.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Engine\GeometricPrimitives\SpherePrimitive.cs" />
     <Compile Include="Engine\GeometricPrimitives\TeapotPrimitive.cs" />
     <Compile Include="Engine\GeometricPrimitives\TorusPrimitive.cs" />
+    <Compile Include="Engine\Lighting\Light.cs" />
     <Compile Include="Engine\Managers\BaseManager.cs" />
     <Compile Include="Engine\Managers\ChunkManager.cs" />
     <Compile Include="Engine\Managers\RenderManager.cs" />

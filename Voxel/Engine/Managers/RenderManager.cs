@@ -81,7 +81,7 @@ namespace Voxel.Engine.Managers
 
             lightMap = new RenderTarget2D(GraphicsDevice, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight, false,
                                           SurfaceFormat.Rgba64, DepthFormat.Depth16);
-            
+
             spriteBatch = new SpriteBatch(this.GraphicsDevice);
         }
 
@@ -106,7 +106,7 @@ namespace Voxel.Engine.Managers
             GraphicsDevice.SetRenderTargets(renderTargets);
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            this.GraphicsDevice.Clear(Color.Transparent);
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
 
             List<RenderDescription> renderDescriptions = new List<RenderDescription>();
@@ -157,7 +157,7 @@ namespace Voxel.Engine.Managers
                     // Set our vertex declaration, vertex buffer, and index buffer.
                     this.Game.GraphicsDevice.SetVertexBuffer(desc.geoPrim.VertexBuffer);
                     this.Game.GraphicsDevice.Indices = desc.geoPrim.IndexBuffer;
-                    
+
                     effectDeferredShading.Parameters["World"].SetValue(desc.worldTransform);
                     effectDeferredShading.Parameters["View"].SetValue(Matrix.CreateLookAt(cameraEntity.position,
                               (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up));
@@ -173,7 +173,7 @@ namespace Voxel.Engine.Managers
             }
             GraphicsDevice.SetRenderTargets(null);
         }
-        
+
         private void Lighting()
         {
             BlendState LightMapBS = new BlendState();
@@ -187,7 +187,7 @@ namespace Voxel.Engine.Managers
             SceneManager sceneMgr = this.Game.GetManager("Scene") as SceneManager;
             if (sceneMgr == null)
                 throw new Exception("Scene Manager not registered properly to the game engine.");
-            
+
             BaseEntity cameraEntity = sceneMgr.GetEntity(currentCameraEntityName);
             if (cameraEntity == null)
                 throw new Exception("A camera entity must always exist if we are trying to render a scene");
@@ -202,34 +202,42 @@ namespace Voxel.Engine.Managers
             GraphicsDevice.BlendState = LightMapBS;
             GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
 
-            effectDirectionalLight.Parameters["VPI"].SetValue(Matrix.Invert(Matrix.CreateLookAt(cameraEntity.position,
-                              (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up) * Matrix.CreatePerspectiveFieldOfView(
-                              MathHelper.ToRadians(EngineCommon.FOV), camComp.AspectRatio, 0.1f, 5000.0f)));
-            effectDirectionalLight.Parameters["VI"].SetValue(Matrix.Invert(Matrix.CreateLookAt(cameraEntity.position,
-                              (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up)));
-            effectDirectionalLight.Parameters["CameraPosition"].SetValue(cameraEntity.position);
-            effectDirectionalLight.Parameters["GBufferTextureSize"].SetValue(new Vector2(Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight));
+            foreach (Light light in sceneMgr.GetLights())
+            {
+                switch (light.type)
+                {
+                    case LightType.Directional:
+                        effectDirectionalLight.Parameters["VPI"].SetValue(Matrix.Invert(Matrix.CreateLookAt(cameraEntity.position,
+                                          (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up) * Matrix.CreatePerspectiveFieldOfView(
+                                          MathHelper.ToRadians(EngineCommon.FOV), camComp.AspectRatio, 0.1f, 5000.0f)));
+                        effectDirectionalLight.Parameters["VI"].SetValue(Matrix.Invert(Matrix.CreateLookAt(cameraEntity.position,
+                                          (cameraEntity.position + cameraEntity.rotation.Forward), Vector3.Up)));
+                        effectDirectionalLight.Parameters["CameraPosition"].SetValue(cameraEntity.position);
+                        effectDirectionalLight.Parameters["GBufferTextureSize"].SetValue(new Vector2(Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight));
 
-            Vector3 lDIr = new Vector3(-0.7f, -1, -0.5f);
-            lDIr.Normalize();
+                        effectDirectionalLight.Parameters["LightDirection"].SetValue(light.rotation.Forward);
+                        effectDirectionalLight.Parameters["LightColor"].SetValue(light.color.ToVector3());
+                        effectDirectionalLight.Parameters["LightIntensity"].SetValue(light.intensity);
 
-            effectDirectionalLight.Parameters["LightDirection"].SetValue(lDIr);
-            effectDirectionalLight.Parameters["LightColor"].SetValue(Color.White.ToVector3());
-            effectDirectionalLight.Parameters["LightIntensity"].SetValue(1f);
-
-            //effectDirectionalLight.Parameters["texColor"].SetValue(renderTargets[0].RenderTarget);
-            effectDirectionalLight.Parameters["texNormal"].SetValue(renderTargets[1].RenderTarget);
-            effectDirectionalLight.Parameters["texDepth"].SetValue(renderTargets[2].RenderTarget);
+                        //effectDirectionalLight.Parameters["texColor"].SetValue(renderTargets[0].RenderTarget);
+                        effectDirectionalLight.Parameters["texNormal"].SetValue(renderTargets[1].RenderTarget);
+                        effectDirectionalLight.Parameters["texDepth"].SetValue(renderTargets[2].RenderTarget);
 
 
-            effectDirectionalLight.CurrentTechnique.Passes[0].Apply();
+                        effectDirectionalLight.CurrentTechnique.Passes[0].Apply();
+                        break;
+                    case LightType.Point:
+                        break;
+                    case LightType.Spot:
+                        break;
+                }
+                RenderQuad(Vector2.One * -1, Vector2.One);
 
-            RenderQuad(Vector2.One * -1, Vector2.One);
-
+            }
             GraphicsDevice.SetRenderTarget(null);
 
             GraphicsDevice.BlendState = BlendState.Opaque;
-            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            //GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
 
@@ -253,7 +261,6 @@ namespace Voxel.Engine.Managers
 
         public void RenderQuad(Vector2 v1, Vector2 v2)
         {
-
             verts[0].Position.X = v2.X;
             verts[0].Position.Y = v1.Y;
 
@@ -277,9 +284,7 @@ namespace Voxel.Engine.Managers
 
             effectComposite.Parameters["texColor"].SetValue(renderTargets[0].RenderTarget);
             effectComposite.Parameters["texLightMap"].SetValue(lightMap);
-
-            effectComposite.Parameters["GBufferTextureSize"].SetValue(new Vector2(Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight));
-
+            
             effectComposite.CurrentTechnique.Passes[0].Apply();
 
             RenderQuad(Vector2.One * -1, Vector2.One);
@@ -288,12 +293,17 @@ namespace Voxel.Engine.Managers
 
         public override void Draw(GameTime gameTime)
         {
+            //GraphicsDevice.RasterizerState = new RasterizerState { FillMode = FillMode.WireFrame };
             SetupGBuffer(gameTime);
 
+            //GraphicsDevice.RasterizerState = new RasterizerState { FillMode = FillMode.Solid };
             Lighting();
+#if !DEBUG
             MakeFinal();
+#endif
 
-            /*spriteBatch.Begin(SpriteSortMode.Immediate);
+#if DEBUG
+            spriteBatch.Begin(SpriteSortMode.Immediate);
 
             float numberColumns = 3;
             float numberRows = (float)Math.Ceiling(renderTargets.Length / numberColumns);
@@ -304,9 +314,10 @@ namespace Voxel.Engine.Managers
             for (int i = 0; i < renderTargets.Length; i++)
                 spriteBatch.Draw((Texture2D)renderTargets[i].RenderTarget, new Rectangle((int)(i % numberColumns) * width, (int)(i / numberColumns % numberRows) * height, width, height), Color.White);
 
-            spriteBatch.Draw(lightMap, new Rectangle(width*2, height, width, height), Color.White);
-            
-            spriteBatch.End();*/
+            spriteBatch.Draw(lightMap, new Rectangle(width * 2, height, width, height), Color.White);
+
+            spriteBatch.End();
+#endif
         }
     }
 }
