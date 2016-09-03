@@ -26,7 +26,7 @@ namespace Voxel
         private ThreadManager threadManager;
         public ThreadManager ThreadManager
         {
-            get {  return threadManager; }
+            get { return threadManager; }
         }
 
         public SceneGame()
@@ -74,16 +74,20 @@ namespace Voxel
 
         protected override void UnloadContent()
         {
+            threadManager.UnloadContent();
+
             foreach (KeyValuePair<string, BaseManager> pair in managers)
                 (pair.Value).UnloadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if(this.IsActive)
+            if (this.IsActive)
             {
+                threadManager.Update(gameTime);
+                
                 foreach (KeyValuePair<string, BaseManager> pair in managers)
-                    (pair.Value).Update(gameTime);
+                    pair.Value.Update(gameTime);
 
                 base.Update(gameTime);
             }

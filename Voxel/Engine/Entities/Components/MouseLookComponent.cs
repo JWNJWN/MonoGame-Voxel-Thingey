@@ -20,7 +20,7 @@ namespace Voxel.Engine.Entities.Components
 
         protected override void Initialize()
         {
-            Mouse.SetPosition(Parent.Manager.Game.GraphicsDevice.Viewport.Width / 2, Parent.Manager.Game.GraphicsDevice.Viewport.Height / 2);
+            //Mouse.SetPosition(Parent.Manager.Game.GraphicsDevice.Viewport.Width / 2, Parent.Manager.Game.GraphicsDevice.Viewport.Height / 2);
 
             originalMouseState = Mouse.GetState();
 
@@ -43,9 +43,11 @@ namespace Voxel.Engine.Entities.Components
                 yRot %= MathHelper.TwoPi;
                 xRot = MathHelper.Clamp(xRot, -MathHelper.PiOver2+0.001f, MathHelper.PiOver2-0.0001f);
 
-                Mouse.SetPosition(Parent.Manager.Game.GraphicsDevice.Viewport.Width / 2, Parent.Manager.Game.GraphicsDevice.Viewport.Height / 2);
+                //Mouse.SetPosition(Parent.Manager.Game.GraphicsDevice.Viewport.Width / 2, Parent.Manager.Game.GraphicsDevice.Viewport.Height / 2);
 
                 Parent.rotation = Matrix.CreateRotationX(xRot) * Matrix.CreateRotationY(yRot);
+
+                originalMouseState = currentMouseState;
             }
         }
 

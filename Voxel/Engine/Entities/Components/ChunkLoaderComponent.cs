@@ -47,8 +47,8 @@ namespace Voxel.Engine.Entities.Components
                 {
                     for (int z = (int)(Parent.position.Z / 32 - chunkLoadDistance); z < (int)(Parent.position.Z / 32 + chunkLoadDistance); z++)
                     {
-                        if (chunkMgr.GetChunk(new Vector3(x, 0, z)) == null)
-                            chunkMgr.AddChunk(new World.Chunk(chunkMgr, new Vector3(x, 0, z)));
+                            if (chunkMgr.GetChunk(new Vector3(x, 0, z)) == null)
+                                chunkMgr.AddChunk(new World.Chunk(chunkMgr, new Vector3(x, 0, z)));
                     }
                 }
                 i = 1;

@@ -53,11 +53,11 @@ namespace Voxel.Engine.Managers
 
         private void LoadBasicEffect()
         {
-            effect = Game.Content.Load<Effect>("Effects/VoxelEffect");
+            //effect = Game.Content.Load<Effect>("Effects/VoxelEffect");
             effectDeferredShading = Game.Content.Load<Effect>("Effects/DeferredShading");
             effectDirectionalLight = Game.Content.Load<Effect>("Effects/DirectionalLight");
             effectComposite = Game.Content.Load<Effect>("Effects/Composite");
-            effect.CurrentTechnique = effect.Techniques["VoxelEffect"];
+            //effect.CurrentTechnique = effect.Techniques["VoxelEffect"];
             //effect.EnableDefaultLighting();
         }
 
@@ -121,7 +121,7 @@ namespace Voxel.Engine.Managers
 
             Dictionary<Vector3, Chunk> chunks = new Dictionary<Vector3, Chunk>(chunkMgr.Chunks);
 
-            foreach (KeyValuePair<Vector3, Chunk> pair in chunkMgr.Chunks)
+            foreach (KeyValuePair<Vector3, Chunk> pair in chunks)
             {
                 (pair.Value).Draw(gameTime, renderDescriptions);
             }
@@ -297,11 +297,9 @@ namespace Voxel.Engine.Managers
             SetupGBuffer(gameTime);
 
             //GraphicsDevice.RasterizerState = new RasterizerState { FillMode = FillMode.Solid };
-            //Game.ThreadManager.QueueEvent(Lighting);
+
             Lighting();
-#if !DEBUG
             MakeFinal();
-#endif
 
 #if DEBUG
             spriteBatch.Begin(SpriteSortMode.Immediate);

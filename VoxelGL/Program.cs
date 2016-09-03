@@ -1,6 +1,9 @@
 ﻿using System;
-
-using Voxel;
+using System.Diagnostics;
+using VoxEngine.Managers;
+using VoxelGL.GameScreens;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace VoxelGL
 {
@@ -15,8 +18,41 @@ namespace VoxelGL
         [STAThread]
         static void Main()
         {
-            using (var game = new SceneGame())
-                game.Run();
+#if DEBUG
+            StartUnitTests();
+#else
+            StartGame();
+#endif
+        }
+
+        private static void StartUnitTests()
+        {
+            StartGame();
+        }
+
+        private static void StartGame()
+        {
+            try
+            {
+                using (EngineManager game = new EngineManager())
+                {
+                    EngineManager.Game = game;
+                    SetupScene();
+                    game.Run();
+                }
+            }catch(NoSuitableGraphicsDeviceException)
+            {
+                Debug.WriteLine("Pixel and vertex shaders 2.0 or greater are required.");
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        private static void SetupScene()
+        {
+            ScreenManager.AddScreen(new BackgroundScreen());
+            ScreenManager.AddScreen(new MainMenuScreen());
         }
     }
 }

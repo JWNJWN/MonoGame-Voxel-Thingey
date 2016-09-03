@@ -64,6 +64,8 @@ namespace Voxel.Engine.World
             this.scaleMatrix = Matrix.CreateScale(scale);
             this.position = Position * containerSize;
 
+            dirty = false;
+
             voxels = new byte[containerSize * containerSize * containerSize];
 
             vertices = new List<VertexPositionColorNormal>();
@@ -86,7 +88,7 @@ namespace Voxel.Engine.World
 
                     int height = (int)(pValue * containerSize);
 
-                    for (int y = 0; y < containerSize; y++)
+                    for (int y = (int)position.Y; y < containerSize + position.Y; y++)
                     {
                         if (y == height)
                             SetVoxel(x, y, z, 1);
@@ -280,7 +282,8 @@ namespace Voxel.Engine.World
         public void Update(GameTime gameTime)
         {
             if (dirty)
-                manager.Game.ThreadManager.QueueMesh(GreedyMesh);
+                Manager.Game.ThreadManager.QueueEvent(GreedyMesh);
+
             dirty = false;
 
             description.worldTransform = this.scaleMatrix * Matrix.CreateTranslation(this.position);

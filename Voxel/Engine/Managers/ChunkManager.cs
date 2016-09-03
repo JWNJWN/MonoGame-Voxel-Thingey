@@ -53,15 +53,16 @@ namespace Voxel.Engine.Managers
         public override void Update(GameTime gameTime)
         {
             foreach (KeyValuePair<Vector3, Chunk> pair in chunks)
-                (pair.Value).Update(gameTime);
+                pair.Value.Update(gameTime);
         }
 
         public void AddChunk(Chunk chunk)
         {
-            Chunk checkEntity = null;
-            if (!chunks.TryGetValue(chunk.position, out checkEntity))
+            if (!chunks.Keys.Contains(chunk.position/32))
+            {
                 chunks.Add(chunk.position / 32, chunk);
-            UpdateSurroundingChunks((int)chunk.position.X / 32, (int)chunk.position.Y / 32, (int)chunk.position.Z / 32);
+                UpdateSurroundingChunks((int)chunk.position.X / 32, (int)chunk.position.Y / 32, (int)chunk.position.Z / 32);
+            }
         }
 
         public void RemoveChunk(Chunk chunk)
@@ -87,7 +88,7 @@ namespace Voxel.Engine.Managers
             return chunk;
         }
 
-        private void UpdateSurroundingChunks(int x, int y, int z)
+        public void UpdateSurroundingChunks(int x, int y, int z)
         {
             Chunk tempChunk = GetChunk(new Vector3(x + 1, y, z));
             if (tempChunk != null)

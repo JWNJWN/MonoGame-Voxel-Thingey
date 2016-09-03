@@ -10,31 +10,26 @@ using Voxel.Engine.World;
 
 namespace Voxel.Engine.Managers
 {
-    public struct ActionObject
-    {
-        public WaitCallback action;
-        public object paramaters;
-    }
-
     public class ThreadManager : BaseManager
     {
 
         Thread mainThread;
-        Thread meshThread;
+        Thread chunkThread;
 
-        Queue<Action> meshQueue;
+        Queue<Action<GameTime>> chunkQueue;
+
+        GameTime gameTime;
 
         public ThreadManager(SceneGame game) : base(game)
         {
             mainThread = Thread.CurrentThread;
 
-            meshQueue = new Queue<Action>();
+            chunkQueue = new Queue<Action<GameTime>>();
 
-            meshThread = new Thread(new ThreadStart(HandleMeshing));
+            chunkThread = new Thread(new ThreadStart(HandleChunks));
+            chunkThread.Start();
 
-            meshThread.Start();
-
-            Initialize();
+            //Initialize();
         }
 
         protected override string GetName()
@@ -44,27 +39,42 @@ namespace Voxel.Engine.Managers
 
         public override void UnloadContent()
         {
-            meshThread.Abort();
+            chunkThread.Abort();
             base.UnloadContent();
         }
 
-        private void HandleMeshing()
+        public override void Update(GameTime gameTime)
+        {
+            this.gameTime = gameTime;
+            base.Update(gameTime);
+        }
+
+        private void HandleChunks()
         {
             while (true)
             {
-                if(meshQueue.Count > 0)
+                if(chunkQueue != null && chunkQueue.Count > 0)
                 {
-                    meshQueue.Dequeue().Invoke();
+                    chunkQueue.Dequeue()?.Invoke(gameTime);
                 }
             }
         }
-
-        public void QueueMesh(Action meshAction)
+        
+        public void QueueChunkUpdateEvent(Action<GameTime> chunkAction)
         {
-            meshQueue.Enqueue(meshAction);
+            try
+            {
+                if(chunkAction != null)
+                    chunkQueue?.Enqueue(chunkAction);
+            }
+            catch (Exception e)
+            {
+
+                System.Diagnostics.Debug.Print(e.StackTrace);
+            }
         }
 
-        public void QueueUpdate(Action<GameTime> updateAction, GameTime gameTime)
+        public void QueueUpdate(Action<GameTime> updateAction)
         {
             try
             {
