@@ -54,14 +54,36 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     float3 light = normalize(DiffuseLightDirection);
     float3 normal = normalize(mul(cross(ddy(input.wPosition.xyz), ddx(input.wPosition.xyz)), WorldInverseTranspose));
+	
+	//Diffuse
+	float lightIntensity = mul(normal, light);
+
+	float2 uv = frac(input.TextureCoordinate);
+
+    float4 textureColor = tex2D(textureSampler, uv);
+    textureColor.a = 1;
+ 
+    return saturate(textureColor * saturate(input.Color + (DiffuseColor * DiffuseIntensity * lightIntensity)) + AmbientColor * AmbientIntensity);
+}
+
+float4 PS(VertexShaderOutput input) : COLOR0
+{
+
+    float3 light = normalize(DiffuseLightDirection);
+    float3 normal = normalize(cross(ddx(input.wPosition.xyz), ddy(input.wPosition.xyz)));
 
 	//Diffuse
 	float lightIntensity = mul(normal, light);
 
-    float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+
+	float2 uv = float2(dot(normal.zxy, input.wPosition.xyz), dot(normal.yzx, input.wPosition.xyz));
+
+	//uv+=0.5;
+
+    float4 textureColor = tex2D(textureSampler, uv);
     textureColor.a = 1;
  
-    return saturate(textureColor * saturate(input.Color + (DiffuseColor * DiffuseIntensity * lightIntensity)) + AmbientColor * AmbientIntensity);
+    return float4(uv, 0, 0);
 }
 
 technique Textured
@@ -70,5 +92,10 @@ technique Textured
     {
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader = compile ps_3_0 PixelShaderFunction();
+    }
+    pass Pass2
+    {
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PS();
     }
 }

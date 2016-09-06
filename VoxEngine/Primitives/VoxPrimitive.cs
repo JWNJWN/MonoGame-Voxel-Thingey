@@ -14,20 +14,6 @@ namespace VoxEngine.Primitives
 {
     public class VoxPrimitive : VoxSceneObject, IVoxPrimitive, IVoxLoadable
     {
-
-        List<IVertexType> IVoxMesh.Vertices
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         private List<VertexPositionColor> _vertices = new List<VertexPositionColor>();
         public List<VertexPositionColor> Vertices
         {
@@ -116,8 +102,8 @@ namespace VoxEngine.Primitives
             {
                 EngineManager.Device.DepthStencilState = DepthStencilState.Default;
 
-                Effect effect = ShaderManager.GetShader(Material.Shader).BaseEffect;
-                effect.Parameters["ModelTexture"].SetValue(TextureManager.GetTexture("blank").BaseTexture);
+                Effect effect = ShaderManager.GetShader("primitive").BaseEffect;
+                effect.Parameters["ModelTexture"].SetValue(TextureManager.GetTexture("dirt").BaseTexture);
                 
                 effect.Parameters["World"].SetValue(World);
                 effect.Parameters["View"].SetValue(CameraManager.ActiveCamera.View);

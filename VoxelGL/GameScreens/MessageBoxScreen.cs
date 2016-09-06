@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoxEngine.Textures;
 using VoxEngine.Managers;
+using VoxEngine.Menus;
 using VoxEngine.GameComponents;
 
 namespace VoxelGL.GameScreens

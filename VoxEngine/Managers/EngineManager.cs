@@ -12,17 +12,15 @@ namespace VoxEngine.Managers
             get { return _game; }
             set { _game = value; }
         }
-
-        public EngineManager(string unitTestName) : base(unitTestName) { }
-        public EngineManager() : base("Engine") { }
+        
+        public EngineManager() : base("Engine")
+        {
+            IsMouseVisible = true;
+        }
 
         protected override void Draw(GameTime gameTime)
         {
-            //Device.Clear(BackgroundColor);
-
             base.Draw(gameTime);
-
-            //this.Window.Title = FpsCounter.FPS.ToString();
         }
     }
 }

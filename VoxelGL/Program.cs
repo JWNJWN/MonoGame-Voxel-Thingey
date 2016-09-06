@@ -37,6 +37,7 @@ namespace VoxelGL
                 using (EngineManager game = new EngineManager())
                 {
                     EngineManager.Game = game;
+                    game.RunOneFrame();
                     SetupScene();
                     game.Run();
                 }

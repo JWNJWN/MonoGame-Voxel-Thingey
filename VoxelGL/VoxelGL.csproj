@@ -62,10 +62,9 @@
     <Compile Include="GameScreens\GameplayScreen.cs" />
     <Compile Include="GameScreens\LoadingScreen.cs" />
     <Compile Include="GameScreens\MainMenuScreen.cs" />
-    <Compile Include="GameScreens\MenuEntry.cs" />
-    <Compile Include="GameScreens\MenuScreen.cs" />
     <Compile Include="GameScreens\MessageBoxScreen.cs" />
     <Compile Include="GameScreens\PauseMenuScreen.cs" />
+    <Compile Include="World\Voxels\Voxel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

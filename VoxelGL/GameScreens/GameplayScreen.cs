@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using VoxEngine.GameComponents;
 using VoxEngine.SceneObject.StandardObjects;
-using VoxelGL.GameScreens;
 using VoxEngine.Managers;
-using VoxEngine.Models;
+using VoxEngine.Menus;
 
+using VoxelGL.GameObjects;
 using VoxelGL.GameObjects.Ship;
 
 namespace VoxelGL.GameScreens
@@ -41,9 +37,8 @@ namespace VoxelGL.GameScreens
             Cube cube = new Cube(Color.White);
             SceneGraphManager.AddObject(cube);
 
-            Cube cube1 = new Cube(Color.Red);
-            cube1.Position = new Vector3(1.1f, 0, 0);
-            SceneGraphManager.AddObject(cube1);
+            Chunk chunk = new Chunk();
+            SceneGraphManager.AddObject(chunk);
 
             SceneGraphManager.LoadContent();
 

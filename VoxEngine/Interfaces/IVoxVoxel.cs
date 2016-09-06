@@ -3,28 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace VoxEngine.Interfaces
 {
-    public interface IVoxMesh
+    public interface IVoxVoxel
     {
-        List<uint> Indices
+        ushort ID
         {
             get;
             set;
         }
 
-        VertexBuffer VertexBuffer
+        bool Transparent
         {
             get;
             set;
         }
 
-        IndexBuffer IndexBuffer
+        byte Hardness
         {
             get;
             set;
         }
+
+        bool ReadyToRender
+        {
+            get;
+        }
+
+        void LoadContent();
+        void UnloadContent();
     }
 }

@@ -11,13 +11,13 @@ namespace VoxEngine.Helpers
     {
         public static FileStream CreateGameContentFile(string relativeFilename, bool createNew)
         {
-            string fullPath = Path.Combine("Contents/", relativeFilename);
+            string fullPath = Path.Combine("Content/", relativeFilename);
             return File.Open(fullPath, createNew ? FileMode.Create : FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
         }
 
         public static FileStream LoadGameContentFile(string relativeFilename)
         {
-            string fullPath = Path.Combine("Contents/", relativeFilename);
+            string fullPath = Path.Combine("Content/", relativeFilename);
             if (!File.Exists(fullPath))
                 return null;
             else
@@ -26,13 +26,13 @@ namespace VoxEngine.Helpers
 
         public static FileStream SaveGameContentFile(string relativeFilename)
         {
-            string fullPath = Path.Combine("Contents/", relativeFilename);
+            string fullPath = Path.Combine("Content/", relativeFilename);
             return File.Open(fullPath, FileMode.Create, FileAccess.Write);
         }
 
         public static FileStream OpenFileForCurrentPlayer(string filename, FileMode mode, FileAccess access)
         {
-            string fullFileName = Path.Combine("Contents/", filename);
+            string fullFileName = Path.Combine("Content/", filename);
             return new FileStream(fullFileName, mode, access, FileShare.ReadWrite);
         }
 

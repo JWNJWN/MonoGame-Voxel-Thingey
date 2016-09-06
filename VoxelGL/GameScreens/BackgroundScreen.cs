@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VoxEngine.GameComponents;
 using VoxEngine.Managers;
 using VoxEngine.Textures;
-using VoxEngine.Interfaces;
+using VoxEngine.Menus;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

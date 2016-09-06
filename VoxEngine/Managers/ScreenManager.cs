@@ -5,8 +5,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VoxEngine.Textures;
-using VoxEngine.GameComponents;
-
+using VoxEngine.Menus;
 
 namespace VoxEngine.Managers
 {

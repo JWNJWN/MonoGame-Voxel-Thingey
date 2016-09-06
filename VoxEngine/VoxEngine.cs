@@ -83,6 +83,7 @@ namespace VoxEngine
         private static SceneGraphManager _sceneGraphManager = null;
         private static CameraManager _cameraManager = null;
         private static ModelManager _modelManager = null;
+        private static VoxelManager _voxelManager = null;
 
         private static Input _input = null;
         public static Input Input
@@ -96,6 +97,7 @@ namespace VoxEngine
             
             GameSettings.Initialize();
             ApplyResolutionChange();
+            _graphicsDeviceManager.ApplyChanges();
 
             _windowTitle = windowTitle;
 
@@ -114,8 +116,7 @@ namespace VoxEngine
 
             _shaderManager = new ShaderManager(this);
             Components.Add(_shaderManager);
-
-
+            
             _screenManager = new ScreenManager(this);
             Components.Add(_screenManager);
 
@@ -127,6 +128,9 @@ namespace VoxEngine
 
             _modelManager = new ModelManager(this);
             Components.Add(_modelManager);
+
+            _voxelManager = new VoxelManager(this);
+            Components.Add(_voxelManager);
             
             _input = new Input(this);
             Components.Add(_input);
@@ -165,8 +169,7 @@ namespace VoxEngine
         protected override void Initialize()
         {
             base.Initialize();
-
-            //_graphicsDeviceManager.DeviceReset += new EventHandler<>(GraphicsDeviceManager_DeviceReset);
+            _graphicsDeviceManager.DeviceReset += new EventHandler<EventArgs>(GraphicsDeviceManager_DeviceReset);
             GraphicsDeviceManager_DeviceReset(null, EventArgs.Empty);
         }
 
@@ -180,11 +183,13 @@ namespace VoxEngine
 
         protected override void LoadContent()
         {
+            GameSettings.Load();
             //base.LoadContent();
         }
 
         protected override void UnloadContent()
         {
+            GameSettings.Save();
             //base.UnloadContent();
         }
 

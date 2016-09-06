@@ -85,6 +85,12 @@ namespace VoxEngine.Managers
             VoxTexture blankTex = new VoxTexture("blank");
             AddTexture(blankTex, "blank");
 
+            VoxTexture buttonTex = new VoxTexture("UI/Button");
+            AddTexture(buttonTex, "button");
+
+            VoxTexture dirtTex = new VoxTexture("Blocks/Dirt");
+            AddTexture(dirtTex, "dirt");
+
             ThreadStart threadStarter = delegate
             {
                 foreach(IVoxTexture texture in _textures.Values)

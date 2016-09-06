@@ -50,7 +50,7 @@ namespace Voxel.Engine.World
         #region Chunk Render Variables
         private RenderDescription description;
 
-        List<VertexPositionColorNormal> vertices;
+        List<VertexPositionColor> vertices;
         List<int> indices;
         #endregion
 
@@ -68,7 +68,7 @@ namespace Voxel.Engine.World
 
             voxels = new byte[containerSize * containerSize * containerSize];
 
-            vertices = new List<VertexPositionColorNormal>();
+            vertices = new List<VertexPositionColor>();
             indices = new List<int>();
 
             description = new RenderDescription();
@@ -265,10 +265,10 @@ namespace Voxel.Engine.World
         {
             int index = vertices.Count;
 
-            vertices.Add(new VertexPositionColorNormal(v1, VoxelIndexer.voxelIndex[voxel].color, normal));
-            vertices.Add(new VertexPositionColorNormal(v2, VoxelIndexer.voxelIndex[voxel].color, normal));
-            vertices.Add(new VertexPositionColorNormal(v3, VoxelIndexer.voxelIndex[voxel].color, normal));
-            vertices.Add(new VertexPositionColorNormal(v4, VoxelIndexer.voxelIndex[voxel].color, normal));
+            vertices.Add(new VertexPositionColor(v1, VoxelIndexer.voxelIndex[voxel].color));
+            vertices.Add(new VertexPositionColor(v2, VoxelIndexer.voxelIndex[voxel].color));
+            vertices.Add(new VertexPositionColor(v3, VoxelIndexer.voxelIndex[voxel].color));
+            vertices.Add(new VertexPositionColor(v4, VoxelIndexer.voxelIndex[voxel].color));
 
             indices.Add(index);
             indices.Add(index + 1);

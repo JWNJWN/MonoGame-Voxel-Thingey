@@ -233,6 +233,8 @@ namespace VoxEngine.Settings
             _needSave = false;
 
             FileStream file = FileHelper.SaveGameContentFile(SettingsFilename);
+
+
             new XmlSerializer(typeof(GameSettings)).Serialize(file, _defaultInstance);
 
             file.Close();

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using VoxEngine.Managers;
+using VoxEngine.Menus;
+using VoxEngine.GUI;
 
 namespace VoxelGL.GameScreens
 {
@@ -9,22 +9,12 @@ namespace VoxelGL.GameScreens
     {
         public MainMenuScreen() : base("Main Menu")
         {
-            MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
-            MenuEntry optionsMenuEntry = new MenuEntry("Options");
-            MenuEntry exitMenuEntry = new MenuEntry("Exit");
+            GUIPanel buttonPanel = new GUIPanel(_rootPanel, 0.3f, 0.4f, 0.4f, 0.5f, "buttonPanel");
 
-            playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-            optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-            exitMenuEntry.Selected += OnCancel;
-
-            MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(optionsMenuEntry);
-            MenuEntries.Add(exitMenuEntry);
-        }
-
-        void PlayGameMenuEntrySelected(object sender, EventArgs e)
-        {
-            LoadingScreen.Load(true, new GameplayScreen());
+            GUIButton playButton = new GUIButton(buttonPanel, 0f, 0f, 1f, 0.1f, "playButton", "Play", (object sender, EventArgs e) =>
+            {
+                LoadingScreen.Load(true, new GameplayScreen());
+            });
         }
 
         void OptionsMenuEntrySelected(object sender, EventArgs e)
@@ -32,7 +22,7 @@ namespace VoxelGL.GameScreens
             //OptionsMenu
         }
 
-        protected override void OnCancel()
+        protected override void OnCancel(object sender, EventArgs e)
         {
             const string message = "Are you sure you want to exit this sample?";
 

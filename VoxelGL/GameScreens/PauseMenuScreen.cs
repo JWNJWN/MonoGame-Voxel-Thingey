@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VoxEngine.Menus;
 using VoxEngine.Managers;
 using Microsoft.Xna.Framework;
 
@@ -13,15 +10,12 @@ namespace VoxelGL.GameScreens
         public PauseMenuScreen() : base("Paused")
         {
             IsPopup = true;
-
-            MenuEntry resumeGameMenuEntry = new MenuEntry("Resume Game");
-            MenuEntry quitGameMenuEntry = new MenuEntry("Quit Game");
+            /*MenuEntry resumeGameMenuEntry = new MenuEntry(0, 0, 10, 10, "Resume Game");
+            MenuEntry quitGameMenuEntry = new MenuEntry(0, 20, 10, 10, "Quit Game");
 
             resumeGameMenuEntry.Selected += OnCancel;
-            quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
-
-            MenuEntries.Add(resumeGameMenuEntry);
-            MenuEntries.Add(quitGameMenuEntry);
+            quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;*/
+            
         }
 
         void QuitGameMenuEntrySelected(object sender, EventArgs e)

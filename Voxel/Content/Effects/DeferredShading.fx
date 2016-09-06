@@ -16,16 +16,14 @@ matrix Projection;
 struct VertexShaderInput
 {
 	float4 Position : SV_POSITION;
-	float3 Normal : NORMAL;
 	float4 Color : COLOR0;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : POSITION;
-	float3 Pos : Color3;
-	float3 Color : COLOR0;
-	float3 Normal : COLOR1;
+	float3 Pos : Color0;
+	float3 Color : COLOR1;
 	float3 Depth : COLOR2;
 };
 
@@ -46,7 +44,6 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	output.Position = mul(input.Position, WVP);
 	output.Pos = input.Position/32;
 	output.Depth = output.Position.w/20;
-	output.Normal = input.Normal;
 	output.Color = input.Color.xyz;
 
 	return output;
@@ -57,7 +54,7 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
 	PixelShaderOutput output;
 	
 	output.Color = float4(input.Pos, 1);
-	output.Normal = float4(input.Normal, 1);
+	output.Normal = float4(input.Pos, 1); //float4(normalize(cross(ddx(input.Pos.xyz), ddy(input.Pos.xyz))), 1);
 	output.Depth = float4(input.Depth, 1);
 	output.Specular = float4(1,1,1,1);
 
