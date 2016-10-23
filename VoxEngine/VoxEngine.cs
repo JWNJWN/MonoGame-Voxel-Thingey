@@ -81,6 +81,7 @@ namespace VoxEngine
         private static TextureManager _textureManager = null;
         private static ScreenManager _screenManager = null;
         private static SceneGraphManager _sceneGraphManager = null;
+        private static SceneChunkManager _sceneChunkManager = null;
         private static CameraManager _cameraManager = null;
         private static ModelManager _modelManager = null;
         private static VoxelManager _voxelManager = null;
@@ -122,6 +123,9 @@ namespace VoxEngine
 
             _sceneGraphManager = new SceneGraphManager(this);
             Components.Add(_sceneGraphManager);
+
+            _sceneChunkManager = new SceneChunkManager(this);
+            Components.Add(_sceneChunkManager);
 
             _cameraManager = new CameraManager(this);
             Components.Add(_cameraManager);

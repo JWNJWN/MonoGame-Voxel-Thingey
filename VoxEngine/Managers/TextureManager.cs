@@ -91,6 +91,9 @@ namespace VoxEngine.Managers
             VoxTexture dirtTex = new VoxTexture("Blocks/Dirt");
             AddTexture(dirtTex, "dirt");
 
+            VoxTexture blocksTex = new VoxTexture("Blocks/Blocks");
+            AddTexture(blocksTex, "chunk");
+
             ThreadStart threadStarter = delegate
             {
                 foreach(IVoxTexture texture in _textures.Values)

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace VoxEngine.Interfaces
 {
     public interface IVoxVoxel
     {
-        ushort ID
+        byte Viscocity
         {
             get;
             set;
@@ -26,12 +27,10 @@ namespace VoxEngine.Interfaces
             set;
         }
 
-        bool ReadyToRender
+        Vector2 Offset
         {
             get;
+            set;
         }
-
-        void LoadContent();
-        void UnloadContent();
     }
 }

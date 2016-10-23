@@ -53,7 +53,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GameObjects\Chunk.cs" />
     <Compile Include="GameObjects\Ship\Ship.cs" />
     <Compile Include="GameObjects\Ship\ShipMain.cs" />
     <Compile Include="Program.cs" />
@@ -64,9 +63,11 @@
     <Compile Include="GameScreens\MainMenuScreen.cs" />
     <Compile Include="GameScreens\MessageBoxScreen.cs" />
     <Compile Include="GameScreens\PauseMenuScreen.cs" />
-    <Compile Include="World\Voxels\Voxel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="LibNoise">
+      <HintPath>..\..\..\LibNoise\LibNoise\bin\Release\LibNoise.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\OpenTK.dll</HintPath>
     </Reference>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using VoxEngine.Managers;
+using VoxEngine.Shaders;
 using VoxelGL.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,6 +53,8 @@ namespace VoxelGL
 
         private static void SetupScene()
         {
+            ShaderManager.AddShader(new VoxShader("Chunk"), "chunk");
+
             ScreenManager.AddScreen(new BackgroundScreen());
             ScreenManager.AddScreen(new MainMenuScreen());
         }

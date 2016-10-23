@@ -6,9 +6,11 @@ using VoxEngine.GameComponents;
 using VoxEngine.SceneObject.StandardObjects;
 using VoxEngine.Managers;
 using VoxEngine.Menus;
+using VoxEngine.Voxels;
 
 using VoxelGL.GameObjects;
 using VoxelGL.GameObjects.Ship;
+
 
 namespace VoxelGL.GameScreens
 {
@@ -22,13 +24,7 @@ namespace VoxelGL.GameScreens
             TransitionOnTime = TimeSpan.FromSeconds(1.5f);
             TransitionOffTime = TimeSpan.FromSeconds(0.5f);
             
-            FirstPersonCamera cam = new FirstPersonCamera();
-            cam.SetPosition(new Vector3(0, 0, -10));
-            cam.NearPlane = 0.1f;
-            cam.FarPlane = 1000000.0f;
-            
-            CameraManager.AddCamera(cam, CameraManager.CameraNumber._3);
-            CameraManager.SetActiveCamera(CameraManager.CameraNumber._3);
+            CameraManager.SetActiveCamera(CameraManager.CameraNumber._default);
             CameraManager.SetAllCamerasProjectionMatrix((float)EngineManager.Device.Viewport.Width / EngineManager.Device.Viewport.Height);
         }
 
@@ -37,8 +33,7 @@ namespace VoxelGL.GameScreens
             Cube cube = new Cube(Color.White);
             SceneGraphManager.AddObject(cube);
 
-            Chunk chunk = new Chunk();
-            SceneGraphManager.AddObject(chunk);
+            SceneChunkManager.AddChunk(new Vector3(0, 0, 0));
 
             SceneGraphManager.LoadContent();
 
@@ -66,6 +61,9 @@ namespace VoxelGL.GameScreens
             {
                 SceneGraphManager.HandleInput(gameTime, input);
 
+                if (!input.LastKeyboardState.IsKeyDown(Keys.C) && input.CurrentKeyboardState.IsKeyDown(Keys.C))
+                    SceneChunkManager.AddChunk(CameraManager.ActiveCamera.Position);
+
                 if (input.CurrentKeyboardState.IsKeyDown(Keys.Q))
                     CameraManager.ActiveCamera.Translate(new Vector3(0, 30f * (float)delta, 0.0f));
                 if (input.CurrentKeyboardState.IsKeyDown(Keys.Z))
@@ -78,6 +76,11 @@ namespace VoxelGL.GameScreens
                     CameraManager.ActiveCamera.Translate(new Vector3(-10f * (float)delta, 0, 0));
                 if (input.CurrentKeyboardState.IsKeyDown(Keys.A))
                     CameraManager.ActiveCamera.Translate(new Vector3(10f * (float)delta, 0, 0));
+
+                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed)
+                {
+                    SceneChunkManager.DirtyChunks();
+                }
 
                 if (input.CurrentMouseState.RightButton == ButtonState.Pressed)
                 {
@@ -97,6 +100,8 @@ namespace VoxelGL.GameScreens
 
             EngineManager.Device.BlendState = BlendState.Opaque;
             EngineManager.Device.DepthStencilState = DepthStencilState.DepthRead;
+
+            SceneChunkManager.Draw(gameTime);
 
             SceneGraphManager.Draw(gameTime);
         }
