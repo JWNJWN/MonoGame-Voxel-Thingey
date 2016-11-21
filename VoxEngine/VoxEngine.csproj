@@ -47,10 +47,14 @@
     <Compile Include="GameComponents\ChaseCamera.cs" />
     <Compile Include="GameComponents\FirstPersonCamera.cs" />
     <Compile Include="GameComponents\FpsCounter.cs" />
+    <Compile Include="GameComponents\TPSCounter.cs" />
     <Compile Include="GUI\GUIButton.cs" />
     <Compile Include="GUI\GUIObject.cs" />
     <Compile Include="GUI\GUIPanel.cs" />
+    <Compile Include="Helpers\MathsHelper.cs" />
+    <Compile Include="Interfaces\IVoxDebug.cs" />
     <Compile Include="Managers\SceneChunkManager.cs" />
+    <Compile Include="Managers\ThreadManager.cs" />
     <Compile Include="Managers\VoxelManager.cs" />
     <Compile Include="Menus\GameScreen.cs" />
     <Compile Include="GameComponents\Input.cs" />
@@ -97,9 +101,13 @@
     <Compile Include="Shaders\PrimitiveEffect.cs" />
     <Compile Include="Shaders\VoxShader.cs" />
     <Compile Include="Textures\VoxTexture.cs" />
+    <Compile Include="Types\Byte3.cs" />
+    <Compile Include="Types\Byte4.cs" />
+    <Compile Include="Types\Byte2.cs" />
     <Compile Include="VertexDeclarations\GreedyVertexPositionTexture.cs" />
     <Compile Include="Voxels\Chunk.cs" />
     <Compile Include="Voxels\VoxVoxel.cs" />
+    <Compile Include="Voxels\VoxVoxelEntity.cs" />
     <Compile Include="VoxEngine.cs" />
   </ItemGroup>
   <ItemGroup>

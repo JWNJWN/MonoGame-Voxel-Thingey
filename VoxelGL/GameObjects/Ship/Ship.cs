@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace VoxelGL.GameObjects.Ship
 {
-    public class Ship : VoxSceneObject, IVoxLoadable, IVoxUpdateable, IVoxSimplePhysics, IVoxOcclusion
+    public class Ship : VoxSceneObject, IVoxLoadable, IVoxUpdateable, IVoxSimplePhysics, IVoxOcclusion, IVoxCullable
     {
         private string _occlusionmodelName;
         public string OcclusionModelName

@@ -22,12 +22,12 @@ namespace VoxEngine.Menus
             TransitionOffTime = TimeSpan.FromSeconds(0.5f);
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        public override void HandleInput(GameTime gameTime)
         {
-            if (input.MenuCancel)
+            if (EngineManager.Input.MenuCancel)
                 ExitScreen();
 
-            _rootPanel.HandleInput(gameTime, input);
+            _rootPanel.HandleInput(gameTime);
         }
 
         protected virtual void OnCancel(object sender, EventArgs e)

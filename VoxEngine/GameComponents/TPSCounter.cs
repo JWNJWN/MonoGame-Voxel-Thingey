@@ -4,19 +4,19 @@ using Microsoft.Xna.Framework;
 
 namespace VoxEngine.GameComponents
 {
-    public class FpsCounter : DrawableGameComponent
+    public class TpsCounter : GameComponent
     {
         private float updateInterval = 1.0f;
         private float timeSinceLastUpdate = 0.0f;
-        private float frameCount = 0;
-        private float fps = 0;
+        private float tickCount = 0;
+        private float tps = 0;
 
-        public float FPS
+        public float TPS
         {
-            get { return fps; }
+            get { return tps; }
         }
 
-        public FpsCounter(Game game) : base(game)
+        public TpsCounter(Game game) : base(game)
         {
             Enabled = true;
         }
@@ -24,21 +24,17 @@ namespace VoxEngine.GameComponents
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            tickCount++;
             timeSinceLastUpdate += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(timeSinceLastUpdate >= updateInterval)
+            if (timeSinceLastUpdate >= updateInterval)
             {
+                tps = tickCount / timeSinceLastUpdate; //mean fps over updateIntrval
+                tickCount = 0;
                 timeSinceLastUpdate -= updateInterval;
-                fps = frameCount;
-                frameCount = 0;
 
                 Updated?.Invoke(this, new EventArgs());
             }
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            frameCount++;
         }
 
         public event EventHandler<EventArgs> Updated;

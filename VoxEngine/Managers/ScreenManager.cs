@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
@@ -76,7 +77,7 @@ namespace VoxEngine.Managers
 
         public override void Update(GameTime gameTime)
         {
-            EngineManager.Input.Update();
+            EngineManager.Input.Update(gameTime);
 
             _screensToUpdate.Clear();
 
@@ -98,7 +99,7 @@ namespace VoxEngine.Managers
                 {
                     if(!otherScreenHasFocus)
                     {
-                        screen.HandleInput(gameTime, EngineManager.Input);
+                        screen.HandleInput(gameTime);
 
                         otherScreenHasFocus = true;
                     }

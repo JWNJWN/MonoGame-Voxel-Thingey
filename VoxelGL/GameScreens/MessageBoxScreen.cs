@@ -42,13 +42,13 @@ namespace VoxelGL.GameScreens
             TextureManager.AddTexture(new VoxTexture("gradient"), texture);
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        public override void HandleInput(GameTime gameTime)
         {
-            if(input.MenuSelect)
+            if(EngineManager.Input.MenuSelect)
             {
                 Accepted?.Invoke(this, EventArgs.Empty);
                 ExitScreen();
-            }else if (input.MenuCancel)
+            }else if (EngineManager.Input.MenuCancel)
             {
                 Cancelled?.Invoke(this, EventArgs.Empty);
                 ExitScreen();

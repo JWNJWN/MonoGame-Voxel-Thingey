@@ -10,6 +10,6 @@ namespace VoxEngine.Interfaces
 {
     public interface IVoxAcceptInput : IVoxSceneObject
     {
-        void HandleInput(GameTime gameTime, Input input);
+        void HandleInput(GameTime gameTime);
     }
 }

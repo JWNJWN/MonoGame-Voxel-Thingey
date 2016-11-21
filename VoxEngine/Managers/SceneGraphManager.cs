@@ -42,9 +42,9 @@ namespace VoxEngine.Managers
             _root.DrawCulling(gameTime);
         }
 
-        public static void HandleInput(GameTime gameTime, Input input)
+        public static void HandleInput(GameTime gameTime)
         {
-            _root.HandleInput(gameTime, input);
+            _root.HandleInput(gameTime);
         }
 
         public override void Update(GameTime gameTime)

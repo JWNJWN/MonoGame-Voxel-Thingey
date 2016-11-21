@@ -32,7 +32,7 @@ namespace VoxEngine.GameComponents
             Enabled = true;
         }
 
-        public void Update()
+        public void Update(object o)
         {
             LastKeyboardState = CurrentKeyboardState;
             LastGamePadState = CurrentGamePadState;

@@ -63,7 +63,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float4 textureColor = tex2D(textureSampler, uv);
     textureColor.a = 1;
  
-    return saturate(textureColor * saturate(input.Color + (DiffuseColor * DiffuseIntensity * lightIntensity)) + AmbientColor * AmbientIntensity);
+    return saturate(textureColor * (input.Color + (DiffuseColor * DiffuseIntensity * lightIntensity)) + AmbientColor * AmbientIntensity);
 }
 
 float4 PS(VertexShaderOutput input) : COLOR0

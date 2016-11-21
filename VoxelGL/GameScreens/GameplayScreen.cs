@@ -17,22 +17,20 @@ namespace VoxelGL.GameScreens
     class GameplayScreen : GameScreen
     {
         private static double delta = 0.0;
-        private static ShipMain shipMain = new ShipMain();
 
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5f);
             TransitionOffTime = TimeSpan.FromSeconds(0.5f);
-            
+
             CameraManager.SetActiveCamera(CameraManager.CameraNumber._default);
             CameraManager.SetAllCamerasProjectionMatrix((float)EngineManager.Device.Viewport.Width / EngineManager.Device.Viewport.Height);
+
+            CameraManager.ActiveCamera.SetPosition(new Vector3(16, 35, 16));
         }
 
         public override void LoadContent()
         {
-            Cube cube = new Cube(Color.White);
-            SceneGraphManager.AddObject(cube);
-
             SceneChunkManager.AddChunk(new Vector3(0, 0, 0));
 
             SceneGraphManager.LoadContent();
@@ -45,48 +43,90 @@ namespace VoxelGL.GameScreens
             SceneGraphManager.UnloadContent();
         }
 
+        int frameCounter = 0;
+
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             delta = gameTime.ElapsedGameTime.TotalSeconds;
 
             FirstPersonCamera camera = (FirstPersonCamera)CameraManager.ActiveCamera;
+
+            frameCounter++;
+
+            byte distance = 10;
+
+            if (frameCounter > 60)
+            {
+                frameCounter = 0;
+                for (int x = -distance; x < distance; x++)
+                {
+                    for (int z = -distance; z < distance; z++)
+                    {
+                        if (new Vector2(x, z).Length() < distance)
+                        {
+                            int newX = (int)Math.Floor(CameraManager.ActiveCamera.Position.X / SceneChunkManager.ChunkSize) + x;
+                            int newZ = (int)Math.Floor(CameraManager.ActiveCamera.Position.Z / SceneChunkManager.ChunkSize) + z;
+                            SceneChunkManager.AddChunkColumn(new Vector2(newX, newZ));
+                        }
+                    }
+                }
+
+                foreach (var chunk in SceneChunkManager.Chunks.Keys)
+                    if (Vector2.Distance(new Vector2(CameraManager.ActiveCamera.Position.X, CameraManager.ActiveCamera.Position.Z), new Vector2(chunk.X, chunk.Z)*SceneChunkManager.ChunkSize) > (distance+1)*SceneChunkManager.ChunkSize)
+                        SceneChunkManager.RemoveChunk(chunk);
+            }
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        bool _drawDebug = false;
+
+        public override void HandleInput(GameTime gameTime)
         {
-            if (input.PauseGame)
+            if (EngineManager.Input.PauseGame)
                 ScreenManager.AddScreen(new PauseMenuScreen());
             else
             {
-                SceneGraphManager.HandleInput(gameTime, input);
+                SceneGraphManager.HandleInput(gameTime);
 
-                if (!input.LastKeyboardState.IsKeyDown(Keys.C) && input.CurrentKeyboardState.IsKeyDown(Keys.C))
-                    SceneChunkManager.AddChunk(CameraManager.ActiveCamera.Position);
+                if (!EngineManager.Input.LastKeyboardState.IsKeyDown(Keys.C) && EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.C))
+                    SceneChunkManager.AddChunk(new Vector3((int)Math.Floor(CameraManager.ActiveCamera.Position.X / 32), (int)Math.Floor(CameraManager.ActiveCamera.Position.Y / 32), (int)Math.Floor(CameraManager.ActiveCamera.Position.Z / 32)) * 32);
 
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.Q))
-                    CameraManager.ActiveCamera.Translate(new Vector3(0, 30f * (float)delta, 0.0f));
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.Z))
-                    CameraManager.ActiveCamera.Translate(new Vector3(0, -30f * (float)delta, 0.0f));
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.W))
-                    CameraManager.ActiveCamera.Translate(new Vector3(0, 0, 10f * (float)delta));
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.S))
-                    CameraManager.ActiveCamera.Translate(new Vector3(0, 0, -10f * (float)delta));
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.D))
-                    CameraManager.ActiveCamera.Translate(new Vector3(-10f * (float)delta, 0, 0));
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.A))
-                    CameraManager.ActiveCamera.Translate(new Vector3(10f * (float)delta, 0, 0));
+                if (!EngineManager.Input.LastKeyboardState.IsKeyDown(Keys.F3) && EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.F3))
+                    _drawDebug = !_drawDebug;
 
-                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed)
+
+                float speedMult = 1.0f;
+
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.LeftShift))
+                    speedMult = 25f;
+
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.Q))
+                    CameraManager.ActiveCamera.Translate(new Vector3(0, 30f * (float)delta, 0.0f) * speedMult);
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.Z))
+                    CameraManager.ActiveCamera.Translate(new Vector3(0, -30f * (float)delta, 0.0f) * speedMult);
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.W))
+                    CameraManager.ActiveCamera.Translate(new Vector3(0, 0, 10f * (float)delta) * speedMult);
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.S))
+                    CameraManager.ActiveCamera.Translate(new Vector3(0, 0, -10f * (float)delta) * speedMult);
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.D))
+                    CameraManager.ActiveCamera.Translate(new Vector3(-10f * (float)delta, 0, 0) * speedMult);
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.A))
+                    CameraManager.ActiveCamera.Translate(new Vector3(10f * (float)delta, 0, 0) * speedMult);
+
+
+                if (EngineManager.Input.CurrentMouseState.LeftButton == ButtonState.Pressed)
                 {
-                    SceneChunkManager.DirtyChunks();
+                    //SceneChunkManager.DirtyChunks();
                 }
 
-                if (input.CurrentMouseState.RightButton == ButtonState.Pressed)
+                if (EngineManager.Input.CurrentMouseState.RightButton == ButtonState.Pressed)
                 {
-                    CameraManager.ActiveCamera.RotateX(-input.MouseMoved.Y);
-                    CameraManager.ActiveCamera.RotateY(input.MouseMoved.X);
+                    CameraManager.ActiveCamera.RotateX(-EngineManager.Input.MouseMoved.Y);
+                    CameraManager.ActiveCamera.RotateY(EngineManager.Input.MouseMoved.X);
                 }
+
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.F11) && !EngineManager.Input.LastKeyboardState.IsKeyDown(Keys.F11))
+                    EngineManager.DeviceManager.ToggleFullScreen();
             }
         }
 
@@ -102,6 +142,8 @@ namespace VoxelGL.GameScreens
             EngineManager.Device.DepthStencilState = DepthStencilState.DepthRead;
 
             SceneChunkManager.Draw(gameTime);
+            if (_drawDebug)
+                SceneChunkManager.DrawDebug(gameTime);
 
             SceneGraphManager.Draw(gameTime);
         }
@@ -110,10 +152,11 @@ namespace VoxelGL.GameScreens
         {
             base.PostUIDraw(gameTime);
 
-            string message = "FPS: " + EngineManager.FpsCounter.FPS.ToString() +
-                             " Culled: " + SceneGraphManager.culled.ToString() +
-                             " Occluded: " + SceneGraphManager.occluded.ToString() +
-                             "\nCamera " + CameraManager.ActiveCamera.Position.ToString();
+            string message =
+                "FPS: " + EngineManager.FpsCounter.FPS.ToString() +
+                "\nCulled: " + SceneGraphManager.culled.ToString() +
+                " Occluded: " + SceneGraphManager.occluded.ToString() +
+                "\nCamera " + CameraManager.ActiveCamera.Position.ToString();
 
             Vector2 textPosition = new Vector2(10, 40);
 

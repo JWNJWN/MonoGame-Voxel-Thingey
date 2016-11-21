@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelPipeline", "VoxelPipeline\VoxelPipeline.csproj", "{F1AAE05C-77F8-4945-9A9D-9CD8BC7D61B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelGL", "VoxelGL\VoxelGL.csproj", "{2D8E3870-748E-465C-9E4F-E2112815C9A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27D54C45-DD73-4DA3-BD58-7576FC1754F0} = {27D54C45-DD73-4DA3-BD58-7576FC1754F0}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxEngine", "VoxEngine\VoxEngine.csproj", "{27D54C45-DD73-4DA3-BD58-7576FC1754F0}"
 EndProject

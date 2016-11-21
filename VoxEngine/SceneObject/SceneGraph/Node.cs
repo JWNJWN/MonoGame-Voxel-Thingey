@@ -44,11 +44,11 @@ namespace VoxEngine.SceneObject.SceneGraph
                 return 0;
         }
 
-        public virtual void HandleInput(GameTime gameTime, Input input)
+        public virtual void HandleInput(GameTime gameTime)
         {
             _nodes.ForEach(delegate (Node node)
             {
-                node.HandleInput(gameTime, input);
+                node.HandleInput(gameTime);
             });
         }
 

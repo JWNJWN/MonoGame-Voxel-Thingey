@@ -1,5 +1,6 @@
 ﻿using System;
 using VoxEngine.Menus;
+using VoxEngine.GUI;
 using VoxEngine.Managers;
 using Microsoft.Xna.Framework;
 
@@ -15,7 +16,9 @@ namespace VoxelGL.GameScreens
 
             resumeGameMenuEntry.Selected += OnCancel;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;*/
-            
+
+            GUIButton resumeButton = new GUIButton(_rootPanel, 0.25f, 0.3f, 0.5f, 0.1f, "resumeButton", "Resume", OnCancel);
+            GUIButton quitButton = new GUIButton(_rootPanel, 0.25f, 0.5f, 0.5f, 0.1f, "quitButton", "Quit", QuitGameMenuEntrySelected);
         }
 
         void QuitGameMenuEntrySelected(object sender, EventArgs e)

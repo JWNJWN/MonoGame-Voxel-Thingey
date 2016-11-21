@@ -57,6 +57,10 @@ namespace VoxEngine
         }
 
         protected static GraphicsDeviceManager _graphicsDeviceManager = null;
+        public static GraphicsDeviceManager DeviceManager
+        {
+            get { return _graphicsDeviceManager; }
+        }
         public static GraphicsDevice Device
         {
             get { return _graphicsDeviceManager.GraphicsDevice; }
@@ -77,6 +81,7 @@ namespace VoxEngine
             get { return _fpsCounter; }
         }
 
+        private static ThreadManager _threadManager = null;
         private static ShaderManager _shaderManager = null;
         private static TextureManager _textureManager = null;
         private static ScreenManager _screenManager = null;
@@ -98,7 +103,6 @@ namespace VoxEngine
             
             GameSettings.Initialize();
             ApplyResolutionChange();
-            _graphicsDeviceManager.ApplyChanges();
 
             _windowTitle = windowTitle;
 
@@ -106,8 +110,12 @@ namespace VoxEngine
             _graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
 #endif
             this.IsFixedTimeStep = false;
+            _graphicsDeviceManager.ApplyChanges();
 
             _contentManager = new ContentManager(this.Services);
+
+            _threadManager = new ThreadManager(this);
+            Components.Add(_threadManager);
 
             _textureManager = new TextureManager(this);
             Components.Add(_textureManager);
@@ -124,7 +132,7 @@ namespace VoxEngine
             _sceneGraphManager = new SceneGraphManager(this);
             Components.Add(_sceneGraphManager);
 
-            _sceneChunkManager = new SceneChunkManager(this);
+            _sceneChunkManager = new SceneChunkManager(this, 32);
             Components.Add(_sceneChunkManager);
 
             _cameraManager = new CameraManager(this);

@@ -24,10 +24,10 @@ namespace VoxEngine.SceneObject.SceneGraph
             _sceneObject = newObject;
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        public override void HandleInput(GameTime gameTime)
         {
             if (SceneObject is IVoxAcceptInput)
-                ((IVoxAcceptInput)SceneObject).HandleInput(gameTime, input);
+                ((IVoxAcceptInput)SceneObject).HandleInput(gameTime);
         }
 
         public override void Update(GameTime gameTime)

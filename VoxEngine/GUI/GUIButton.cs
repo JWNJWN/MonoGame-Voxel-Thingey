@@ -26,9 +26,9 @@ namespace VoxEngine.GUI
             ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, _text, Bounds.Center.ToVector2() - ScreenManager.Font.MeasureString(_text) / 2, Color.White);
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        public override void HandleInput(GameTime gameTime)
         {
-            if (Bounds.Contains(input.CurrentMouseState.Position) && input.CurrentMouseState.LeftButton == ButtonState.Pressed)
+            if (Bounds.Contains(EngineManager.Input.CurrentMouseState.Position) && EngineManager.Input.CurrentMouseState.LeftButton == ButtonState.Pressed)
                 _pressedEvent?.Invoke(this, EventArgs.Empty);
         }
     }

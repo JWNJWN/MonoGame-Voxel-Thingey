@@ -13,6 +13,8 @@ float DiffuseIntensity = 1.0;
 float TextureTotalSize;
 float TextureVoxelSize;
 
+float Gamma;
+
 texture ModelTexture;
 sampler2D textureSampler = sampler_state {
     Texture = (ModelTexture);
@@ -26,8 +28,7 @@ struct VertexShaderInput
 {
     float4 Position : POSITION0;
 	float4 Color : COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
-	float2 TextureOffset : Normal;
+    float4 TextureCoordinate : TEXCOORD0;
 };
  
 struct VertexShaderOutput
@@ -35,45 +36,43 @@ struct VertexShaderOutput
     float4 Position : POSITION0;
 	float4 wPosition : Color0;
     float4 Color : COLOR1;
-    float2 TextureCoordinate : TEXCOORD0;
-	float2 TextureOffset : TEXCOORD1;
+	float4 TextureInfo : TEXCOORD0;
 };
  
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;
- 
-    float4 worldPosition = mul(input.Position, World);
+	
+	float4 pos = input.Position.xyzw;
+	
+    float4 worldPosition = mul(pos, World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
 
 	output.wPosition = worldPosition;
 	output.Color = input.Color;
 
-	float2 textureCoord = input.TextureCoordinate;
-
-    output.TextureCoordinate = textureCoord;
-	output.TextureOffset = input.TextureOffset;
+	output.TextureInfo = input.TextureCoordinate;
     return output;
 }
  
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     float3 light = normalize(DiffuseLightDirection);
-    float3 normal = normalize(mul(cross(ddy(input.wPosition.xyz), ddx(input.wPosition.xyz)), WorldInverseTranspose));
+    float3 normal = normalize(cross(ddy(input.wPosition.xyz), ddx(input.wPosition.xyz)));
 	
 	//Diffuse
-	float lightIntensity = mul(normal, light);
+	float lightIntensity = dot(normal, light);
 	
 	float uvMult = TextureVoxelSize/TextureTotalSize;
-	float2 uv = (input.TextureOffset * uvMult) + fmod(input.TextureCoordinate, 1.0) * uvMult;
+	float2 uv = (input.TextureInfo.zw * uvMult) + fmod(input.TextureInfo.xy, 1) * uvMult;
 
     float4 textureColor = tex2D(textureSampler, uv);
     textureColor.a = 1;
  
-	input.Color = DiffuseColor * DiffuseIntensity * lightIntensity;
+	float4 lightColor = pow(DiffuseColor * DiffuseIntensity * lightIntensity, 1/Gamma);
 
-    return saturate((textureColor * input.Color) + AmbientColor * AmbientIntensity);
+    return saturate((textureColor * lightColor) + AmbientColor * AmbientIntensity);
 }
 
 technique Textured

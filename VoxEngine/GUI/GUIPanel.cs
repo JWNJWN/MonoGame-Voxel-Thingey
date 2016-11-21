@@ -37,10 +37,10 @@ namespace VoxEngine.GUI
 
         }
 
-        public override void HandleInput(GameTime gameTime, Input input)
+        public override void HandleInput(GameTime gameTime)
         {
             foreach (GUIObject child in _children.Values)
-                child.HandleInput(gameTime, input);
+                child.HandleInput(gameTime);
         }
     }
 }

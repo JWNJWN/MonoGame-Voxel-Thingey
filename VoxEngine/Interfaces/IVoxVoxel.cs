@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using VoxEngine.Types;
 
 namespace VoxEngine.Interfaces
 {
@@ -27,7 +28,19 @@ namespace VoxEngine.Interfaces
             set;
         }
 
-        Vector2 Offset
+        Byte2[] Offset
+        {
+            get;
+            set;
+        }
+
+        bool InfrequentUpdates
+        {
+            get;
+            set;
+        }
+
+        EventHandler<Vector3> Update
         {
             get;
             set;

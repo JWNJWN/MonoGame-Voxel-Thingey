@@ -228,25 +228,25 @@ namespace VoxelGL.GameObjects.Ship
             Velocity = Vector3.Zero;
         }
 
-        public void HandleInput(GameTime gameTime, Input input)
+        public void HandleInput(GameTime gameTime)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (ReadyToRender)
             {
-                Vector2 rotationAmount = -input.CurrentGamePadState.ThumbSticks.Left;
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.W))
+                Vector2 rotationAmount = -EngineManager.Input.CurrentGamePadState.ThumbSticks.Left;
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.W))
                     rotationAmount.Y = -1.0f;
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.S))
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.S))
                     rotationAmount.Y = 1.0f;
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.D))
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.D))
                     rotationAmount.X = -1.0f;
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.A))
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.A))
                     rotationAmount.X = 1.0f;
                 // Determine thrust amount from input
 
                 float thrustAmount = 0;
-                if (input.CurrentKeyboardState.IsKeyDown(Keys.Space))
+                if (EngineManager.Input.CurrentKeyboardState.IsKeyDown(Keys.Space))
                     thrustAmount = 1.0f;
 
                 // Scale rotation amount to radians per second

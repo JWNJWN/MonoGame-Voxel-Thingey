@@ -124,7 +124,7 @@ namespace VoxEngine.Menus
             return true;
         }
 
-        public virtual void HandleInput(GameTime gameTime, Input input) { }
+        public virtual void HandleInput(GameTime gameTime) { }
         public virtual void Draw(GameTime gameTime) { }
         public virtual void PostUIDraw(GameTime gameTime) { }
 

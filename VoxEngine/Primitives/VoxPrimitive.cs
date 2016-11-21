@@ -103,8 +103,8 @@ namespace VoxEngine.Primitives
                 EngineManager.Device.DepthStencilState = DepthStencilState.Default;
 
                 Effect effect = ShaderManager.GetShader("primitive").BaseEffect;
-                effect.Parameters["ModelTexture"].SetValue(TextureManager.GetTexture("dirt").BaseTexture);
-                
+                effect.Parameters["ModelTexture"].SetValue(TextureManager.GetTexture("missing").BaseTexture);
+
                 effect.Parameters["World"].SetValue(World);
                 effect.Parameters["View"].SetValue(CameraManager.ActiveCamera.View);
                 effect.Parameters["Projection"].SetValue(CameraManager.ActiveCamera.Projection);
